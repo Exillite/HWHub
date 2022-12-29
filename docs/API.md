@@ -2,6 +2,12 @@
 
 ## Objects
 
+- [User](#user)
+- [StudentGroup](#studentgroup)
+- [Homework](#homework)
+- [Submission](#submission)
+
+
 ### User
 - id (int) - unique identifier primary key
 - role (string) - role of user (student, consultant, teacher, admin)
@@ -46,6 +52,7 @@
 
 
 ## Methods
+
 
 ### Registration
 - method: POST
