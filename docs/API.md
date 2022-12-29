@@ -1,13 +1,13 @@
 # API Documentation
 
-## Objects
+## __Objects__
 
 - [User](#user)
 - [StudentGroup](#studentgroup)
 - [Homework](#homework)
 - [Submission](#submission)
 
-
+---
 ### User
 - id (int) - unique identifier primary key
 - role (string) - role of user (student, consultant, teacher, admin)
