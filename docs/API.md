@@ -777,9 +777,3 @@
 }
 ```
 - note: if student has no homework result, then he will have 0.0 points, 0.0 fine and 0.0 mark
-
-
-
-
-
-
