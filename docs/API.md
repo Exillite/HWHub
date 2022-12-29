@@ -10,7 +10,7 @@
 ---
 ### User
 - id (int) - unique identifier primary key
-- role (string) - role of user (student, consultant, teacher, admin)
+- role (string) - role of user (student, consultant, teacher)
 - name (string) - first name
 - surname (string)  - last name
 - patronymic (string) - middle name
@@ -133,7 +133,7 @@
         "email": "string",
         "vk_id": "int", // if user is not connected to vk, this field is null
         "telegram_id": "int", // if user is not connected to telegram, this field is null
-        "students_groups": ["array of StudentGroup"]
+        "students_groups": ["array of id StudentGroup"]
     }
 }
 ```
@@ -208,7 +208,7 @@
                 "email": "test@mai.com",
                 "vk_id": 123456789,
                 "telegram_id": 123456789,
-                "students_groups": []
+                "students_groups": [1, 2, 5]
             }
         ]
     }
@@ -273,7 +273,7 @@
                     "email": "test@mail.com",
                     "vk_id": null,
                     "telegram_id": 234254253452,
-                    "students_groups": []
+                    "students_groups": [2, 4]
                 },
                 "connect_code": "123456"
             },
