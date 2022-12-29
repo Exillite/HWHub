@@ -53,21 +53,21 @@
 - request body: 
 ```json
 {
-    "name": string,
-    "surname": string,
-    "patronymic": string,
-    "email": string,
-    "password": string,
+    "name": "string",
+    "surname": "string",
+    "patronymic": "string",
+    "email": "string",
+    "password": "string",
 }
 ```
 
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int   
+        "id": "int"   
     }
 }
 ```
@@ -86,17 +86,17 @@
 - request body: 
 ```json
 {
-    "email": string,
-    "password": string,
+    "email": "string",
+    "password": "string",
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int   
+        "id": "int"   
     }
 }
 ```
@@ -115,18 +115,18 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "role": string,
-        "name": string,
-        "surname": string,
-        "patronymic": string,
-        "email": string,
-        "vk_id": int, // if user is not connected to vk, this field is null
-        "telegram_id": int, // if user is not connected to telegram, this field is null
-        "students_groups": [array of StudentGroup]
+        "id": "int",
+        "role": "string",
+        "name": "string",
+        "surname": "string",
+        "patronymic": "string",
+        "email": "string",
+        "vk_id": "int", // if user is not connected to vk, this field is null
+        "telegram_id": "int", // if user is not connected to telegram, this field is null
+        "students_groups": ["array of StudentGroup"]
     }
 }
 ```
@@ -142,18 +142,18 @@
 - request body: 
 ```json
 {
-    "name": string,
-    "surname": string,
-    "patronymic": string,
+    "name": "string",
+    "surname": "string",
+    "patronymic": "string",
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
+        "id": "int",
     }
 }
 ```
@@ -169,11 +169,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "consultants": [array of User]
+        "count": "int",
+        "consultants": ["array of User"]
     }
 }
 ```
@@ -214,11 +214,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "students": [array of User]
+        "count": "int",
+        "students": ["array of User"]
     }
 }
 ```
@@ -236,11 +236,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "students_groups": [array of StudentGroup]
+        "count": "int",
+        "students_groups": ["array of StudentGroup"]
     }
 }
 ```
@@ -286,13 +286,13 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "title": string,
-        "teacher": User,
-        "connect_code": string
+        "id": "int",
+        "title": "string",
+        "teacher": "User",
+        "connect_code": "string"
     }
 }
 ```
@@ -308,16 +308,16 @@
 - request body: 
 ```json
 {
-    "title": string,
+    "title": "string",
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
+        "id": "int",
     }
 }
 ```
@@ -332,19 +332,19 @@
 - request body: 
 ```json
 {
-    "title": string,
+    "title": "string",
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "title": string,
-        "teacher": User,
-        "connect_code": string
+        "id": "int",
+        "title": "string",
+        "teacher": "User",
+        "connect_code": "string"
     }
 }
 ```
@@ -360,10 +360,10 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
+        "id": "int",
     }
 }
 ```
@@ -379,17 +379,17 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "title": string,
-        "file": string,
-        "uploaded_at": datetime,
-        "deadline": datetime,
-        "last_updated_at": datetime,
-        "points": [array of double],
-        "mark_formula": string
+        "id": "int",
+        "title": "string",
+        "file": "string",
+        "uploaded_at": "datetime",
+        "deadline": "datetime",
+        "last_updated_at": "datetime",
+        "points": ["array of double"],
+        "mark_formula": "string"
     }
 }
 ```
@@ -414,8 +414,7 @@
         "mark_formula": "k - 10",
     }
 }
-
-
+```
 
 ### Get Homeworks of StudentGroup
 - method: GET
@@ -423,11 +422,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "homeworks": [array of Homework]
+        "count": "int",
+        "homeworks": ["array of Homework"]
     }
 }
 ```
@@ -466,21 +465,21 @@
 - request body: 
 ```json
 {
-    "title": string,
-    "file": string,
-    "student_group": int,
-    "deadline": datetime,
-    "points": [array of double],
-    "mark_formula": string
+    "title": "string",
+    "file": "string",
+    "student_group": "int",
+    "deadline": "datetime",
+    "points": ["array of double"],
+    "mark_formula": "string"
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
+        "id": "int",
     }
 }
 ```
@@ -496,28 +495,28 @@
 - request body: 
 ```json
 {
-    "title": string,
-    "file": string,
-    "student_group": int,
-    "deadline": datetime,
-    "points": [array of double],
-    "mark_formula": string
+    "title": "string",
+    "file": "string",
+    "student_group": "int",
+    "deadline": "datetime",
+    "points": ["array of double"],
+    "mark_formula": "string"
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "title": string,
-        "file": string,
-        "uploaded_at": datetime,
-        "deadline": datetime,
-        "last_updated_at": datetime,
-        "points": [array of double],
-        "mark_formula": string
+        "id": "int",
+        "title": "string",
+        "file": "string",
+        "uploaded_at": "datetime",
+        "deadline": "datetime",
+        "last_updated_at": "datetime",
+        "points": ["array of double"],
+        "mark_formula": "string"
     }
 }
 ```
@@ -533,10 +532,10 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
+        "id": "int",
     }
 }
 ```
@@ -552,16 +551,16 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "points": [array of double],
-        "points_sum": double,
-        "fine": double,
-        "mark": double,
-        "start_submit": datetime,
-        "last_updated_at": datetime,
+        "id": "int",
+        "points": ["array of double"],
+        "points_sum": "double",
+        "fine": "double",
+        "mark": "double",
+        "start_submit": "datetime",
+        "last_updated_at": "datetime",
     }
 }
 ```
@@ -595,23 +594,23 @@
 - request body: 
 ```json
 {
-    "points": [array of double],
-    "fine": double,
+    "points": ["array of double"],
+    "fine": "double",
 }
 ```
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "id": int,
-        "points": [array of double],
-        "points_sum": double,
-        "fine": double,
-        "mark": double,
-        "start_submit": datetime,
-        "last_updated_at": datetime,
+        "id": "int",
+        "points": ["array of double"],
+        "points_sum": "double",
+        "fine": "double",
+        "mark": "double",
+        "start_submit": "datetime",
+        "last_updated_at": "datetime",
     }
 }
 ```
@@ -629,11 +628,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "submissions": [array of Submission]
+        "count": "int",
+        "submissions": ["array of Submission"]
     }
 }
 ```
@@ -676,11 +675,11 @@
 - response body: 
 ```json
 {
-    "status": int,
+    "status": "int",
     "data": 
     {
-        "count": int,
-        "homework_results": [array of HomeworkResult]
+        "count": "int",
+        "homework_results": ["array of HomeworkResult"]
     }
 }
 ```
