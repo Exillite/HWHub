@@ -309,6 +309,32 @@
     - 201 - student group with this id does not exist
     - 300 - server error
 
+- example of response body:
+```json
+{
+    "status": 100,
+    "data": 
+    {   
+        "id": 1,
+        "title": "Group 1",
+        "teacher": 
+        {
+            "id": 1,
+            "role": "teacher",
+            "name": "Ivan",
+            "surname": "Ivanov",
+            "patronymic": "Ivanovich",
+            "email": "test@mail.ru",
+            "vk_id": null,
+            "telegram_id": 234254253452,
+            "students_groups": [2, 4]
+        },
+        "connect_code": "123456"
+    }
+}
+```
+
+
 ### Create StudentGroup
 - method: POST
 - path: /api/v0_1/student_group
@@ -777,3 +803,64 @@
 }
 ```
 - note: if student has no homework result, then he will have 0.0 points, 0.0 fine and 0.0 mark
+
+
+### Get Student HomeworkResults
+- method: GET
+- path: /api/v0_1/student/{id}/homework_results
+- response body: 
+```json
+{
+    "status": "int",
+    "data": 
+    {
+        "count": "int",
+        "homework_results": ["array of HomeworkResult"]
+    }
+}
+```
+- status codes:
+    - 100 - success
+    - 103 - success, but server has warnings
+    - 201 - student with this id does not exist
+    - 300 - server error
+
+- example of response body:
+```json
+{
+    "status": 100,
+    "data": 
+    {   
+        "count": 2,
+        "homework_results": 
+        [
+            {
+                "homework_id": 1,
+                "homework_title": "Homework 1",
+                "homework_file": "https://example.com/file.pdf",
+                "homework_deadline": "2020-01-01T00:00:00",
+                "homework_points": [1.0, 2.0, 3.0],
+                "homework_mark_formula": "k / 2 + 1",
+                "points": [1.0, 0.5, 0.2],
+                "points_sum": 12.0,
+                "fine": 0.0,
+                "mark": 5.0,
+                "last_updated_at": "2020-01-01T00:00:00",
+            },
+            {
+                "homework_id": 2,
+                "homework_title": "Homework 1",
+                "homework_file": "https://example.com/file.pdf",
+                "homework_deadline": "2020-01-01T00:00:00",
+                "homework_points": [1.0, 2.0, 3.0],
+                "homework_mark_formula": "k / 2 + 1",
+                "points": [1.0, 0.5, 0.2],
+                "points_sum": 12.0,
+                "fine": 0.0,
+                "mark": 5.0,
+                "last_updated_at": "2020-01-01T00:00:00",
+            }
+        ]
+    }
+}
+```
