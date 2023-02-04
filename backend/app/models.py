@@ -3,6 +3,7 @@ from mongoengine.fields import StringField, IntField, ListField, BooleanField, R
 
 
 class User(Document):
+    password = StringField(required=True)
     role = StringField(required=True)
     name = StringField(required=True)
     surname = StringField(required=True)

@@ -530,7 +530,6 @@
 {
     "title": "string",
     "file": "string",
-    "student_group": "int",
     "deadline": "datetime",
     "points": ["array of double"],
     "mark_formula": "string"
