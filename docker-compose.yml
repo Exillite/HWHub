@@ -1,23 +1,44 @@
-version: '3'
+version: "3.7"
 services:
-  web:
-    build: .
+  nginx:
+    container_name: "nginx"
+    image: nginx:alpine
+    depends_on:
+      - web
     ports:
-      - 5000:5000
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/database
-    env_file:
-      - .env.dev
-  db:
-    image: "postgres:12"
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: database
-    ports:
-      - 5432:5432
+      - "8082:80"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - custom
+
+  web:
+    container_name: "web"
+    environment:
+      - MONGODB_URL=mongodb://mongo_db/test_database
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - custom
+    depends_on:
+      - mongo_db
+
+  mongo_db:
+      image: mongo
+      container_name: "mongo_db"
+      ports:
+        - "27017:27017"
+      networks:
+        - custom
+      volumes:
+        - ./data/db:/data/db
+
+networks:
+  custom:
+    driver: bridge
 
 volumes:
   db_data:

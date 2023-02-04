@@ -9,7 +9,7 @@
 
 ---
 ### User
-- id (int) - unique identifier primary key
+- id - unique identifier primary key
 - role (string) - role of user (student, consultant, teacher)
 - name (string) - first name
 - surname (string)  - last name
@@ -21,14 +21,14 @@
 - is_active (bool) - is user active
 
 ### StudentGroup
-- id (int) - unique identifier primary key
+- id - unique identifier primary key
 - title (string) - title of group
 - teacher (User) - teacher of group
 - connect_code (string) - code for connecting to group
 - is_active (bool) - is group active
 
 ### Homework
-- id (int) - unique identifier primary key
+- id - unique identifier primary key
 - title (string) - title of homework
 - file (string) - link to file
 - student_group (StudentGroup) - student group
@@ -40,7 +40,7 @@
 - is_active (bool) - is homework active
 
 ### Submission
-- id (int) - unique identifier primary key
+- id - unique identifier primary key
 - student (User) - student
 - homework (Homework) - homework
 - points (array of double) - length of array must be equal to length of points array in homework, each element is 1 if task is done, 0 otherwise or percentage of task completion (for example, 0.5 if task is done half)
@@ -133,7 +133,7 @@
         "email": "string",
         "vk_id": "int", // if user is not connected to vk, this field is null
         "telegram_id": "int", // if user is not connected to telegram, this field is null
-        "students_groups": ["array of id StudentGroup"]
+        "students_groups": ["array of StudentGroup`s ids"]
     }
 }
 ```
@@ -837,7 +837,7 @@
             {
                 "homework_id": 1,
                 "homework_title": "Homework 1",
-                "homework_file": "https://example.com/file.pdf",
+                "homework_file": "https://example.com/file1.pdf",
                 "homework_deadline": "2020-01-01T00:00:00",
                 "homework_points": [1.0, 2.0, 3.0],
                 "homework_mark_formula": "k / 2 + 1",
@@ -849,8 +849,8 @@
             },
             {
                 "homework_id": 2,
-                "homework_title": "Homework 1",
-                "homework_file": "https://example.com/file.pdf",
+                "homework_title": "Homework 2",
+                "homework_file": "https://example.com/file2.pdf",
                 "homework_deadline": "2020-01-01T00:00:00",
                 "homework_points": [1.0, 2.0, 3.0],
                 "homework_mark_formula": "k / 2 + 1",

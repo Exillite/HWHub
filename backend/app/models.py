@@ -1,63 +1,44 @@
-from sqlalchemy import Column, DateTime, Integer, String, Boolean, Float, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql import text
-from .database import Base
+from mongoengine import Document
+from mongoengine.fields import StringField, IntField, ListField, BooleanField, ReferenceField, URLField, DateTimeField, FloatField
 
 
-class User(Base):
-    __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True)
-    role = Column(String)
-    name = Column(String)
-    surname = Column(String)
-    patronymic = Column(String)
-    email = Column(String)
-    vk_id = Column(Integer)
-    telegram_id = Column(Integer)
-    is_active = Column(Boolean)
+class User(Document):
+    role = StringField(required=True)
+    name = StringField(required=True)
+    surname = StringField(required=True)
+    patronymic = StringField(required=True)
+    email = StringField(required=True)
+    vk_id = IntField(default=None)
+    telegram_id = IntField(default=None)
+    students_groups = ListField(ReferenceField('StudentGroup'))
+    is_active = BooleanField(default=True)
 
-    students_groups = relationship("StudentGroup", back_populates="user")
 
-class StudentGroup(Base):
-    __tablename__ = "student_groups"
+class StudentGroup(Document):
+    title = StringField(required=True)
+    teacher = ReferenceField('User', required=True)
+    connect_code = StringField(required=True)
+    is_active = BooleanField(default=True)
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    connect_code = Column(String)
-    is_active = Column(Boolean)
 
-    user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="students_groups")
+class Homework(Document):
+    title = StringField(required=True)
+    file = URLField(required=True)
+    student_group = ReferenceField(StudentGroup, required=True)
+    uploaded_at = DateTimeField(required=True)
+    deadline = DateTimeField(required=True)
+    last_updated_at = DateTimeField(required=True)
+    points = ListField(FloatField(), required=True)
+    mark_formula = StringField(required=True)
+    is_active = BooleanField(default=True)
 
-class Homework(Base):
-    __tablename__ = "homework"
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    file = Column(String)
-    uploaded_at = Column(DateTime)
-    deadline = Column(DateTime)
-    last_updated_at = Column(DateTime)
-    mark_formula = Column(String)
-    is_active = Column(Boolean)
-
-    student_group_id = Column(Integer, ForeignKey("student_groups.id"))
-    student_group = relationship("StudentGroup", back_populates="homework")
-
-class Submission(Base):
-    __tablename__ = "submissions"
-
-    id = Column(Integer, primary_key=True)
-    fine = Column(Float)
-    mark = Column(Float)
-    start_submit = Column(DateTime)
-    last_updated_at = Column(DateTime)
-    is_active = Column(Boolean)
-
-    student_id = Column(Integer, ForeignKey("users.id"))
-    student = relationship("User", back_populates="submissions")
-
-    homework_id = Column(Integer, ForeignKey("homework.id"))
-    homework = relationship("Homework", back_populates="submissions")
+class Submission(Document):
+    student = ReferenceField(User, required=True)
+    homework = ReferenceField(Homework, required=True)
+    points = ListField(FloatField(), required=True)
+    fine = FloatField(default=0)
+    mark = FloatField()
+    start_submit = DateTimeField(required=True)
+    last_updated_at = DateTimeField(required=True)
+    is_active = BooleanField(default=True)
