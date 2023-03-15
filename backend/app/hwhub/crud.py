@@ -164,3 +164,11 @@ def edit_submission(sub: SubmissionUpdate, sub_id) -> SubmissionModel:
 def delete_submission(sub_id: str) -> SubmissionModel:
     submission = SubmissionModel.objects(pk=sub_id).first()
     submission.delete()
+
+
+# ------------------------ ADDITIONAL METHODS ------------------------
+
+
+def get_all_submission_by_homework(hw: HomeworkModel) -> list:
+    subs = SubmissionModel.objects(homework=hw)
+    return list(subs)
