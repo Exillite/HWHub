@@ -84,3 +84,11 @@ class Submission(BaseModel):
     start_submit: datetime.datetime
     last_updated_at: datetime.datetime
     is_active: bool
+    
+class SubmissionCreate(BaseModel):
+    student_id: str
+    homework_id: str
+
+class SubmissionUpdate(BaseModel):
+    points: List[float]
+    fine: float
