@@ -1,6 +1,6 @@
 import cexprtk
 
-def calculate_mark(hw_points, sub_points, formula, fine):
+def calculate_mark(hw_points, sub_points, formula, fine) -> float:
     points_count = len(hw_points) # CNT
     done_count = sum([1 if p != 0 else 0 for p in sub_points]) # C
     total_points = [hw_points[i] * sub_points[i] for i in range(points_count)]
@@ -15,5 +15,5 @@ def calculate_mark(hw_points, sub_points, formula, fine):
     calc = cexprtk.evaluate_expression(formula, variables)
     
     mark = calc + fine
-    
+    mark = round(mark, 2)
     return mark

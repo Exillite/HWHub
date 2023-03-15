@@ -1,8 +1,8 @@
-import string
 from app.schemas import *
 from app.models import *
 
 from validations import *
+import calculation
 
 import datetime
 
@@ -109,10 +109,11 @@ def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
         homework.points = hw.points
         homework.mark_formula = hw.mark_formula
         homework.last_updated_at = datetime.datetime.now()
-        
-        # TODO RECALCULATE MARKS
-        
+                
         homework.save()
+        
+        recalculate_homework_marks(homework)
+        
         return homework
     else:
         return None
@@ -153,8 +154,7 @@ def edit_submission(sub: SubmissionUpdate, sub_id) -> SubmissionModel:
         submission.fine = sub.fine
         submission.points = sub.fine
         submission.last_updated_at = datetime.datetime.now()
-        
-        # TODO calculate mark
+        submission.mark = calculation.calculate_mark(submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine)
         
         submission.save()
         return submission
@@ -172,3 +172,11 @@ def delete_submission(sub_id: str) -> SubmissionModel:
 def get_all_submission_by_homework(hw: HomeworkModel) -> list:
     subs = SubmissionModel.objects(homework=hw)
     return list(subs)
+
+
+def recalculate_homework_marks(hw: HomeworkModel):
+    subs = get_all_submission_by_homework(hw)
+    for sub in subs:
+        sub.mark = calculation.calculate_mark(hw.points, sub.points, hw.mark_formula, sub.fine)
+        sub.save()
+        
