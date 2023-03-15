@@ -4,3 +4,6 @@ envparse==0.2.0
 motor==3.0.0
 uvicorn==0.18.3
 mongoengine==0.26.0
+py-bcrypt==0.4
+loguru==0.6.0
+wheel==0.38.4

@@ -10,7 +10,7 @@
 ---
 ### User
 - id - unique identifier primary key
-- role (string) - role of user (student, consultant, teacher)
+- role (string) - role of user ("student" | "consultant", "teacher" | "admin" | "user")
 - name (string) - first name
 - surname (string)  - last name
 - patronymic (string) - middle name
@@ -110,7 +110,6 @@
 - status codes:
     - 100 - success
     - 103 - success, but server has warnings
-    - 201 - user with this email does not exist
     - 202 - invalid email
     - 203 - invalid password
     - 204 - wrong email or password
@@ -142,6 +141,7 @@
     - 103 - success, but server has warnings
     - 201 - user with this id does not exist
     - 300 - server error
+
 
 ### Edit user
 - method: PUT
@@ -284,7 +284,6 @@
 - status codes:
     - 100 - success
     - 103 - success, but server has warnings
-    - 200 - no students groups
     - 300 - server error
 
 ### Get StudentGroup

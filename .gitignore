@@ -1,2 +1,5 @@
 /backend/env
+data/
 /data
+/backend/app/logs
+.vscode/
