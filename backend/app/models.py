@@ -37,7 +37,7 @@ class UserModel(Document):
 class StudentGroupModel(Document):
     title = StringField(required=True)
     teacher = ReferenceField('UserModel', required=True)
-    connect_code = StringField(required=True)
+    connect_code = StringField(default=None)
     is_active = BooleanField(default=True)
     
     def to_json(self):

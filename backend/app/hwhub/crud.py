@@ -7,22 +7,23 @@ from validations import *
 import datetime
 import random
 
-def registration_user(user: UserCreate) -> User:
-    # add new user to database
+def create_user(user: UserCreate):
     new_user = UserModel(role="student", 
-                     name=user.name, 
-                     surname=user.surname, 
-                     patronymic=user.patronymic, 
-                     email=user.email, 
-                     password=get_hashed_password(user.password), 
-                     is_active=True)
+                name=user.name, 
+                surname=user.surname, 
+                patronymic=user.patronymic,
+                email=user.email, 
+                password=get_hashed_password(user.password), 
+                is_active=True)
     new_user.save()
+    
     return new_user
 
-def login_user(login_user: UserLogin) -> User:
-    # check is login data correct and return user if correct or None if not
-    user = UserModel.objects(email=login_user.email).first()
-    if user and check_password(login_user.password, user.password):
+def get_user(user_id: str) -> User:
+    # get user data
+    usr_mdl = UserModel.objects(pk=user_id).first()
+    user = model_to_user(usr_mdl)
+    if user:
         return user
     return None
 
@@ -37,17 +38,40 @@ def edit_user(updt_user: UserUpdate, user_id: str) -> User:
         return user
     return None
 
-def get_user(user_id: str) -> User:
-    # get user data
-    usr_mdl = UserModel.objects(pk=user_id).first()
-    user = model_to_user(usr_mdl)
-    if user:
-        return user
-    return None
-
 def delete_user(user_id: str):
     user = UserModel.objects(pk=user_id).first()
     user.delete()
 
 
-# def create_student_group()
+def create_student_group(stg: StudentGroupCreate):
+    teacher = get_user(stg.teacher.pk)
+    student_group = StudentGroupModel(
+        title=stg.title,
+        teacher=teacher,
+    )
+    
+    student_group.save()
+    student_group.connect_code = student_group.pk
+    
+    return student_group
+
+def get_student_group(stg_id: str) -> StudentGroupModel:
+    student_group = StudentGroupModel.objects(pk=stg_id).first()
+    if student_group:
+        return student_group
+    else:
+        return None
+
+def edit_student_group(stg: StudentGroupUpdate, stg_id:str) -> StudentGroupModel:
+    student_group = StudentGroupModel.objects(pk=stg_id).first()
+    if student_group:
+        student_group.title = stg.title
+        
+        student_group.save()
+        return student_group
+    else:
+        return None
+    
+def delete_student_group(stg_id: str):
+    student_group = StudentGroupModel.objects(pk=stg_id).first()
+    student_group.delete()
