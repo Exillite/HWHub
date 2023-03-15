@@ -44,7 +44,7 @@ def delete_user(user_id: str):
 
 
 def create_student_group(stg: StudentGroupCreate):
-    teacher = get_user(stg.teacher.pk)
+    teacher = get_user(stg.teacher_id)
     student_group = StudentGroupModel(
         title=stg.title,
         teacher=teacher,
@@ -75,3 +75,46 @@ def edit_student_group(stg: StudentGroupUpdate, stg_id:str) -> StudentGroupModel
 def delete_student_group(stg_id: str):
     student_group = StudentGroupModel.objects(pk=stg_id).first()
     student_group.delete()
+
+
+def create_homework(hw: HomeworkCreate) -> HomeworkModel:
+    student_group = get_student_group(hw.student_group_id)
+    
+    homework = HomeworkModel(
+        title=hw.title,
+        file=hw.file,
+        student_group=student_group,
+        uploaded_at=datetime.datetime.now(),
+        deadline=hw.deadline,
+        last_updated_at=datetime.datetime.now(),
+        points=hw.points,
+        mark_formula=hw.mark_formula
+    )
+    homework.save()
+    
+    return homework
+
+def get_homework(hw_id: str) -> HomeworkModel:
+    homework = HomeworkModel.objects(pk=hw_id).first()
+    if homework:
+        return homework
+    else:
+        return None
+
+def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
+    homework = HomeworkModel.objects(pk=hw_id).first()
+    if homework:
+        homework.title = hw.title
+        homework.file = hw.file
+        homework.deadline = hw.deadline
+        homework.points = hw.points
+        homework.mark_formula = hw.mark_formula
+        
+        homework.save()
+        return homework
+    else:
+        return None
+
+def delete_homework(hw_id: str):
+    homework = HomeworkModel.objects(pk=hw_id).first()
+    homework.delete()

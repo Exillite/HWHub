@@ -34,13 +34,13 @@ class UserUpdate(BaseModel):
 class StudentGroup(BaseModel):
     pk: str
     title: str
-    teacher: User
+    teacher_id: str
     connect_code: str
     is_active: bool
 
 class StudentGroupCreate(BaseModel):
     title: str
-    teacher: User
+    teacher_id: str
 
 class StudentGroupUpdate(BaseModel):
     title: str
@@ -61,7 +61,7 @@ class Homework(BaseModel):
 class HomeworkCreate(BaseModel):
     title: str
     file: str
-    student_group: StudentGroup
+    student_group_id: str
     deadline: datetime.datetime
     points: List[float]
     mark_formula: str
