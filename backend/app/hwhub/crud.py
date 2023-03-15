@@ -5,7 +5,6 @@ from app.models import *
 from validations import *
 
 import datetime
-import random
 
 def create_user(user: UserCreate):
     new_user = UserModel(role="student", 
@@ -109,6 +108,9 @@ def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
         homework.deadline = hw.deadline
         homework.points = hw.points
         homework.mark_formula = hw.mark_formula
+        homework.last_updated_at = datetime.datetime.now()
+        
+        # TODO RECALCULATE MARKS
         
         homework.save()
         return homework
@@ -118,3 +120,47 @@ def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
 def delete_homework(hw_id: str):
     homework = HomeworkModel.objects(pk=hw_id).first()
     homework.delete()
+
+
+def create_submission(sub: SubmissionCreate) -> SubmissionModel:
+    student = get_user(sub.student_id)
+    homework = get_homework(sub.homework_id)
+    
+    points = [0.0] * len(homework.points)
+    
+    submission = SubmissionModel(
+        student=student,
+        homework=homework,
+        points=points,
+        start_submit=datetime.datetime.now(),
+        last_updated_at=datetime.datetime.now()
+    )
+    
+    submission.save()
+    
+    return submission
+
+def get_submission(sub_id: str) -> SubmissionModel:
+    submission = SubmissionModel.objects(pk=sub_id).first()
+    if submission:
+        return submission
+    else:
+        return None
+    
+def edit_submission(sub: SubmissionUpdate, sub_id) -> SubmissionModel:
+    submission = SubmissionModel.objects(pk=sub_id).first()
+    if submission:
+        submission.fine = sub.fine
+        submission.points = sub.fine
+        submission.last_updated_at = datetime.datetime.now()
+        
+        # TODO calculate mark
+        
+        submission.save()
+        return submission
+    else:
+        return None
+
+def delete_submission(sub_id: str) -> SubmissionModel:
+    submission = SubmissionModel.objects(pk=sub_id).first()
+    submission.delete()
