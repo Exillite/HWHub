@@ -38,7 +38,6 @@ class StudentGroup(BaseModel):
     connect_code: str
     is_active: bool
 
-
 class StudentGroupCreate(BaseModel):
     title: str
     teacher: User

@@ -45,49 +45,9 @@ def get_user(user_id: str) -> User:
         return user
     return None
 
-
-def get_all_students_groups() -> List[StudentGroup]:
-    # get all student groups
-    student_groups = []
-    all_student_groups = StudentGroupModel.objects(is_active=True)
-    for student_group in all_student_groups:
-        student_groups.append(model_to_student_group(student_group))
-    return student_groups
-
-def get_student_group(student_group_id: str) -> StudentGroup:
-    # get student group data
-    student_group = StudentGroupModel.objects(pk=student_group_id).first()
-    if student_group:
-        return model_to_student_group(student_group)
-    return None
-
-def generate_student_group_code() -> str:
-    # generate student group unique code wirh length N
-    N = 6
-    student_group_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
-    while StudentGroupModel.objects(code=student_group_code).first():
-        student_group_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
-    return student_group_code
-
-def create_student_group(student_group: StudentGroupCreate) -> StudentGroup:
-    # add new student group to database
-    new_student_group = StudentGroupModel(title=student_group.title,
-                                          teacher=student_group.teacher,
-                                          is_active=True)
-    new_student_group.save()
-
-    new_student_group.code = generate_student_group_code()
-    new_student_group.save()
-
-    return new_student_group
-
-def edit_student_group(updt_student_group: StudentGroupUpdate, student_group_id: str) -> StudentGroup:
-    # edit student group data
-    student_group = StudentGroupModel.objects(pk=student_group_id).first()
-    if student_group:
-        student_group.title = updt_student_group.title
-        student_group.save()
-        return student_group
-    return None
+def delete_user(user_id: str):
+    user = UserModel.objects(pk=user_id).first()
+    user.delete()
 
 
+# def create_student_group()
