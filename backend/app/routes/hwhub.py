@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from app.hwhub.crud import *
+
 router = APIRouter()
 
 @router.get("/hi", description="hi endpoint")

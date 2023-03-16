@@ -179,4 +179,28 @@ def recalculate_homework_marks(hw: HomeworkModel):
     for sub in subs:
         sub.mark = calculation.calculate_mark(hw.points, sub.points, hw.mark_formula, sub.fine)
         sub.save()
-        
+
+
+def get_all_students_group_by_user(user: UserModel) -> list:
+    stg = StudentGroupModel.objects(user=user)
+    return list(stg)
+
+
+def get_homeworks_by_students_group(std: StudentGroupModel) -> list:
+    homeworks = HomeworkModel.objects(student_group=std)
+    return list(homeworks)
+
+
+def get_submissions_by_homework(hw: HomeworkModel) -> list:
+    subs = SubmissionModel.objects(homework=hw)
+    return list(subs)
+
+
+def get_submission_by_homework_and_student(hw: HomeworkModel, user: UserModel) -> SubmissionModel:
+    sub = SubmissionModel.objects(homework=hw, student=user).first()
+    return sub
+
+
+def get_submissions_by_student(user: UserModel) -> list:
+    subs = SubmissionModel.objects(student=user)
+    return list(subs)
