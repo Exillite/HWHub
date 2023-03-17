@@ -1,8 +1,5 @@
-from app.models import *
-from app.schemas import *
-
-import uuid
-import datetime
+from backend.app.hwhub.models import *
+from backend.app.hwhub.schemas import *
 
 import validations
 

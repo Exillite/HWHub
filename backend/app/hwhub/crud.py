@@ -1,8 +1,8 @@
-from app.schemas import *
-from app.models import *
+from .schemas import *
+from .models import *
 
-from validations import *
-import calculation
+from .validations import *
+from . import calculation
 
 import datetime
 

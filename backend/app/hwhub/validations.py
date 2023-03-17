@@ -1,8 +1,8 @@
 import re
 import bcrypt
 
-from app.models import *
-from app.schemas import *
+from .models import *
+from .schemas import *
 
 def get_hashed_password(plain_text_password: str) -> str:
     # Hash a password for the first time

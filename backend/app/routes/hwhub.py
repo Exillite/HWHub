@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.hwhub.crud import *
+from hwhub.crud import *
 
 router = APIRouter()
 

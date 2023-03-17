@@ -17,6 +17,9 @@ async def root():
     return {"message": "Hello Wod"}
 
 
+
+
+
 connect(host=MONGODB_URL)
 
 if __name__ == "__main__":

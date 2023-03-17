@@ -1,7 +1,6 @@
 version: "3.7"
 services:
   nginx:
-    container_name: "nginx"
     image: nginx:alpine
     depends_on:
       - web
@@ -13,7 +12,6 @@ services:
       - custom
 
   web:
-    container_name: "web"
     environment:
       - MONGODB_URL=mongodb://mongo_db/test_database
     build:
@@ -28,7 +26,6 @@ services:
 
   mongo_db:
       image: mongo
-      container_name: "mongo_db"
       ports:
         - "27017:27017"
       networks:
