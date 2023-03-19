@@ -1,20 +1,26 @@
 from pydantic import BaseModel 
-from typing import Optional, List
+from typing import List
+from typing import Union
 import datetime
+
 
 class User(BaseModel):
     pk: str
-    role: str
-    name: str
-    surname: str
-    patronymic: str
-    email: str
-    vk_id: int = None
-    telegram_id: int = None
-    students_groups: list = None
-    is_active: bool
+    login: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Union[str, None] = None
+
+class UserInDB(User):
+    password: str
+
 
 class UserCreate(BaseModel):
+    login: str
     name: str
     surname: str
     patronymic: str
@@ -22,7 +28,7 @@ class UserCreate(BaseModel):
     password: str
 
 class UserLogin(BaseModel):
-    email: str
+    login: str
     password: str
 
 class UserUpdate(BaseModel):

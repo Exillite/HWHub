@@ -5,7 +5,7 @@ services:
     depends_on:
       - web
     ports:
-      - "8082:80"
+      - "80:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
     networks:
@@ -13,14 +13,17 @@ services:
 
   web:
     environment:
-      - MONGODB_URL=mongodb://mongo_db/test_database
+      - MONGODB_URL=mongodb://mongo_db/hwh_db
     build:
       context: ./backend
       dockerfile: Dockerfile
+    command: uvicorn main:app --host 0.0.0.0 --reload
     ports:
       - "8000:8000"
     networks:
       - custom
+    volumes:
+      - ./backend/app:/app
     depends_on:
       - mongo_db
 
@@ -39,3 +42,4 @@ networks:
 
 volumes:
   db_data:
+  backend_data:

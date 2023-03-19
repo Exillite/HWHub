@@ -42,24 +42,3 @@ def validation_login_user(user: UserLogin):
         return False, 203
     
     return True, 200
-
-def model_to_user(user: UserModel) -> User:
-    # convert user model to user schema
-    return User(pk=user.pk,
-                role=user.role,
-                name=user.name,
-                surname=user.surname,
-                patronymic=user.patronymic,
-                email=user.email,
-                vk_id=user.vk_id,
-                telegram_id=user.telegram_id,
-                students_groups=user.students_groups,
-                is_active=user.is_active)
-
-def model_to_student_group(student_group: StudentGroupModel) -> StudentGroup:
-    # convert student group model to student group schema
-    return StudentGroup(pk=student_group.pk,
-                        title=student_group.title,
-                        teacher=model_to_user(student_group.teacher),
-                        connect_code=student_group.connect_code,
-                        is_active=student_group.is_active)

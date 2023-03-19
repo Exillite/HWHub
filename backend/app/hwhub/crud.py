@@ -7,21 +7,21 @@ from . import calculation
 import datetime
 
 def create_user(user: UserCreate):
+    # user.password = user.password.encode('utf-8')
     new_user = UserModel(role="student", 
+                login=user.login,
                 name=user.name, 
                 surname=user.surname, 
                 patronymic=user.patronymic,
-                email=user.email, 
-                password=get_hashed_password(user.password), 
+                email=user.email,
+                password=user.password, 
                 is_active=True)
     new_user.save()
     
     return new_user
 
 def get_user(user_id: str) -> User:
-    # get user data
-    usr_mdl = UserModel.objects(pk=user_id).first()
-    user = model_to_user(usr_mdl)
+    user = UserModel.objects(pk=user_id).first()
     if user:
         return user
     return None
@@ -204,3 +204,10 @@ def get_submission_by_homework_and_student(hw: HomeworkModel, user: UserModel) -
 def get_submissions_by_student(user: UserModel) -> list:
     subs = SubmissionModel.objects(student=user)
     return list(subs)
+
+
+def get_user_by_login(login: str) -> UserModel:
+    user = UserModel.objects(login=login).first()
+    if user:
+        return user
+    return None

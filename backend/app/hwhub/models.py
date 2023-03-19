@@ -4,6 +4,7 @@ from mongoengine.fields import StringField, IntField, ListField, BooleanField, R
 
 class UserModel(Document):
     password = StringField(required=True)
+    login = StringField(required=True)
     role = StringField(required=True)
     name = StringField(required=True)
     surname = StringField(required=True)
