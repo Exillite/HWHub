@@ -7,10 +7,9 @@
 // Components
 import App from './App.vue'
 
-// Composables
 import { createApp } from 'vue'
 
-// Plugins
+import { createStore } from 'vuex';
 import { registerPlugins } from '@/plugins'
 
 const app = createApp(App)

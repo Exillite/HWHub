@@ -1,5 +1,5 @@
 from mongoengine import Document
-from mongoengine.fields import StringField, IntField, ListField, BooleanField, ReferenceField, URLField, DateTimeField, FloatField, DateField
+from mongoengine.fields import StringField, IntField, ListField, BooleanField, ReferenceField, URLField, DateTimeField, FloatField
 
 
 class UserModel(Document):
