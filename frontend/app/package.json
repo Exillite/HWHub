@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "@mdi/font": "7.0.96",
+        "axios": "^1.3.4",
         "roboto-fontface": "*",
         "vue": "^3.2.38",
         "vue-router": "^4.0.0",
