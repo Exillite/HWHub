@@ -10,7 +10,7 @@ from hwhub import validations
 from datetime import datetime, timedelta
 from typing import Union
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -29,6 +29,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
 
+router = APIRouter(
+    prefix="/api/v0.1",
+    responses={404: {"description": "Not found"}},
+)
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -134,9 +138,12 @@ async def read_own_items(
     return [{"item_id": "Foo", "owner": current_user.pk}]
 
 
-@app.get("/", description="Root endpoint")
+@router.get("/", description="Root endpoint")
 async def root():
-    return {"message": "Hello Wod"}
+    return {"message": "Hello Wodrld!"}
+
+
+app.include_router(router)
 
 connect(host=MONGODB_URL)
 
