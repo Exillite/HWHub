@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import uvicorn
 from mongoengine import connect
 from envparse import Env
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from hwhub import crud
 from hwhub import schemas
@@ -25,9 +27,20 @@ env = Env()
 MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/test_database")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v0.1/token")
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 router = APIRouter(
     prefix="/api/v0.1",
@@ -95,7 +108,7 @@ async def get_current_active_user(
     return current_user
 
 
-@app.post("/token", response_model=schemas.Token)
+@router.post("/token", response_model=schemas.Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -113,14 +126,14 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/users/me/")
+@router.get("/users/me/")
 async def read_users_me(
     current_user: schemas.User = Depends(get_current_active_user)
 ):
     return current_user
 
 
-@app.post("/register")
+@router.post("/register")
 async def registaration(user: schemas.UserCreate):
     pwd = str(user.password)
     try:
@@ -131,7 +144,7 @@ async def registaration(user: schemas.UserCreate):
     return {"nu_id": nu.login}
 
 
-@app.get("/users/me/items/")
+@router.get("/users/me/items/")
 async def read_own_items(
     current_user: schemas.User = Depends(get_current_active_user)
 ):
