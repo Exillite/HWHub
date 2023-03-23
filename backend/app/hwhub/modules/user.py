@@ -69,5 +69,6 @@ async def delete_user(user_id: str, current_user: schemas.User = Depends(auth.ge
         return {"status": 400}
     try:
         crud.delete_user(user_id)
+        return {"status": 200}
     except Exception as e:
         return {"status": 500, "error": str(e)}
