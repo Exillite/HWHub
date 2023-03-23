@@ -15,30 +15,39 @@ def check_password(plain_text_password: str, hashed_password: str) -> bool:
 
 def email_validation(email: str) -> bool:
     # check is email correct
-    return re.match(r"[^@]+@[^@]+\.[^@]+", email)
+    return re.match(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b", email)
 
 def password_validation(password: str) -> bool:
     # check is password correct
     return len(password) >= 8
 
 def validation_create_user(user: UserCreate):
+    """
+    Parameters:
+        user (UserCreate): A UserCreate object representing the user information to be validated.
+        
+    Returns:
+        A tuple containing:
+        A boolean value indicating whether the user information is valid or not.
+        A status code indicating the reason for invalidity.
+        
+    Status codes:
+        200: User information is valid.
+        202: User email is invalid or already exists.
+        203: User password is invalid.
+        204: User with this login already exists.
+    
+    Note:
+        This function does not create a new user. It only validates the user information provided.    
+    """    
     # check is user correct and return is_correct and status code
-    if email_validation(user.email):
+    if not email_validation(user.email):
         return False, 202
+    if not password_validation(user.password):
+        return False, 203
     if UserModel.objects(email=user.email).first():
         return False, 202
-
-    if password_validation(user.password):
-        return False, 203
-    
-    return True, 200
-
-def validation_login_user(user: UserLogin):
-    # check is user correct and return is_correct and status code
-    if email_validation(user.email):
-        return False, 202
-
-    if password_validation(user.password):
-        return False, 203
+    if UserModel.objects(login=user.login).first():
+        return False, 204
     
     return True, 200

@@ -4,14 +4,18 @@ from mongoengine import connect
 from envparse import Env
 from fastapi.middleware.cors import CORSMiddleware
 
-from hwhub.modules import auth
+from fastapi import Depends
+
+from hwhub import schemas
+
+from hwhub.modules import auth, user
+
 
 env = Env()
 MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/test_database")
 
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,22 +26,11 @@ app.add_middleware(
 )
 
 
-# @router.get("/users/me/")
-# async def read_users_me(
-#     current_user: schemas.User = Depends(get_current_active_user)
-# ):
-#     return current_user
-
-
-# @router.post("/register")
-# async def registaration(user: schemas.UserCreate):
-#     pwd = str(user.password)
-#     try:
-#         user.password = get_password_hash(pwd)
-#     except Exception as e:
-#         print(e)
-#     nu = crud.create_user(user)
-#     return {"nu_id": nu.login}
+@app.get("/me", description="Check auth")
+async def read_users_me(
+    current_user: schemas.User = Depends(auth.get_current_active_user)
+):
+    return {"status": 200, "user": current_user}
 
 
 @app.get("/api/v0.1", description="Root endpoint")
@@ -46,6 +39,7 @@ async def root():
 
 
 app.include_router(auth.router)
+app.include_router(user.router)
 
 connect(host=MONGODB_URL)
 

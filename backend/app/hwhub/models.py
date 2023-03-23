@@ -1,6 +1,6 @@
 from mongoengine import Document
 from mongoengine.fields import StringField, IntField, ListField, BooleanField, ReferenceField, URLField, DateTimeField, FloatField
-
+from . import schemas
 
 class UserModel(Document):
     password = StringField(required=True)
@@ -23,7 +23,7 @@ class UserModel(Document):
             'surname': self.surname,
             'patronymic': self.patronymic,
             'email': self.email,
-            'students_groups': [sg.to_json() for sg in self.students_groups],
+            'students_groups': [sg.to_json() for sg in self.students_groups] if self.students_groups else [],
             'is_active': self.is_active,
         }
         

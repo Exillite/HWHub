@@ -20,13 +20,13 @@ def create_user(user: UserCreate):
     
     return new_user
 
-def get_user(user_id: str) -> User:
+def get_user(user_id: str) -> UserModel:
     user = UserModel.objects(pk=user_id).first()
     if user:
         return user
     return None
 
-def edit_user(updt_user: UserUpdate, user_id: str) -> User:
+def edit_user(updt_user: UserUpdate, user_id: str) -> UserModel:
     # edit user data
     user = UserModel.objects(pk=user_id).first()
     if user:
@@ -42,7 +42,7 @@ def delete_user(user_id: str):
     user.delete()
 
 
-def create_student_group(stg: StudentGroupCreate):
+def create_student_group(stg: StudentGroupCreate) -> StudentGroupModel:
     teacher = get_user(stg.teacher_id)
     student_group = StudentGroupModel(
         title=stg.title,

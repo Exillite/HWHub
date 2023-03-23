@@ -7,6 +7,16 @@ import datetime
 class User(BaseModel):
     pk: str
     login: str
+    role: str
+    name: str
+    surname: str
+    patronymic: str
+    email: str
+    vk_id: Union[str, None] = None
+    telegram_id: Union[str, None] = None
+    students_groups: list
+    is_active: bool
+
 
 class Token(BaseModel):
     access_token: str

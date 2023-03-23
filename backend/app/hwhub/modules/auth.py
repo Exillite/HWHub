@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Union
 
@@ -14,7 +14,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v0.1/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v0.1/auth/token")
 
 
 router = APIRouter(
@@ -35,7 +35,18 @@ def get_password_hash(password):
 def get_user(login: str):
     usr_mdl = crud.get_user_by_login(login)
     if usr_mdl:
-        return schemas.UserInDB(pk=str(usr_mdl.pk), login=usr_mdl.login, password=usr_mdl.password)
+        return schemas.UserInDB(pk=str(usr_mdl.pk), 
+                                login=usr_mdl.login, 
+                                password=usr_mdl.password,
+                                role=usr_mdl.role,
+                                name=usr_mdl.name,
+                                surname=usr_mdl.surname,
+                                patronymic=usr_mdl.patronymic,
+                                email=usr_mdl.email,
+                                vk_id=usr_mdl.vk_id,
+                                telegram_id=usr_mdl.telegram_id,
+                                students_groups=usr_mdl.students_groups if usr_mdl.students_groups else [],
+                                is_active=usr_mdl.is_active)
 
 def authenticate_user(login: str, password: str):
     user = get_user(login)
@@ -80,7 +91,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def get_current_active_user(
     current_user: schemas.User = Depends(get_current_user)
 ):
-    return current_user
+    user = schemas.User(pk=str(current_user.pk), 
+                        login=current_user.login, 
+                        role=current_user.role,
+                        name=current_user.name,
+                        surname=current_user.surname,
+                        patronymic=current_user.patronymic,
+                        email=current_user.email,
+                        vk_id=current_user.vk_id,
+                        telegram_id=current_user.telegram_id,
+                        students_groups=current_user.students_groups if current_user.students_groups else [],
+                        is_active=current_user.is_active)
+    return user
 
 
 @router.post("/token", response_model=schemas.Token)
@@ -99,5 +121,3 @@ async def login_for_access_token(
         data={"sub": user.login}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
