@@ -8,7 +8,7 @@ from . import auth
 router = APIRouter(
     prefix="/api/v0.1/homework",
     responses={404: {"description": "Not found"}},
-    tags=["Student Group"],
+    tags=["Homework"],
 )
 
 def check_permision(user: schemas.User, homework_id: str = None, student_group_id: str = None, perm="c") -> bool:
@@ -26,14 +26,14 @@ def check_permision(user: schemas.User, homework_id: str = None, student_group_i
         return user.role in ["teacher"] and user.pk == stg.teacher.pk
     if perm == "r":
         hw = crud.get_homework(homework_id)
-        stg = crud.get_student_group(hw.pk)
+        stg = crud.get_student_group(hw.student_group.pk)
         for u_stg in user.students_groups:
             if stg.pk == u_stg.pk:
                 return True
         return stg.teacher.pk == user.pk
     if perm == "e":
         hw = crud.get_homework(homework_id)
-        stg = crud.get_student_group(hw.pk)
+        stg = crud.get_student_group(hw.student_group.pk)
         return stg.teacher.pk == user.pk
     return False
 
@@ -75,7 +75,7 @@ def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, current_use
         return {"status": 200, "homework_id": str(hw.pk)}
     except Exception as e:
         return {"status": 500, "error": str(e)}
-    
+
 
 @router.delete("/{homework_id}")
 def delete_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
