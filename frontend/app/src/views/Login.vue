@@ -1,28 +1,21 @@
 <template>
-            <h2>Вход</h2>
-        <form @submit.prevent="submit">
-            <v-text-field
-                v-model="email"
-                label="E-mail"
-                type="email"
-                variant="outlined"
-                required
-                autocomplete="email"
-            ></v-text-field>
-            <v-text-field
-                v-model="password"
-                label="Пароль"
-                variant="outlined"
-                type="password"
-                required
-                autocomplete="current-password"
-            ></v-text-field>
-            <v-btn variant="outlined" type="submit" color="primary">Войти</v-btn>
-        </form>
 </template>
 
 <script>
+  import api from '@/api';
+
   export default {
-    data: () => ({ drawer: null }),
+    data: () => ({  }),
+    mounted() {
+      api.authorize('exil', '16188sasa').then((r) => {
+        const token = r.data.access_token;
+        localStorage.setItem('token', token);
+        console.log(token);
+      }).catch((e) => {console.log(e);});
+
+      api.me().then((r) => {
+        console.log(r.data);
+      })
+    },
   }
 </script>
