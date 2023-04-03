@@ -23,4 +23,31 @@ export default {
     async me() {
         return axios.get('/me');
     },
+
+    async registaration_new_user(login, name, surname, patronymic, email, password) {
+        return axios.post('/user', {
+            login: login,
+            name: name,
+            surname: surname,
+            patronymic: patronymic,
+            email: email,
+            password: password,
+        });
+    },
+
+    async get_user(user_id) {
+        return axios.get(`/user/${user_id}`);
+    },
+
+    async edit_user(user_id, name, surname, patronymic) {
+        return axios.put(`/user/${user_id}`, {
+            name: name,
+            surname: surname,
+            patronymic: patronymic,
+        });
+    },
+
+    async delete_user(user_id) {
+        return axios.delete(`/user/${user_id}`);
+    },
 }
