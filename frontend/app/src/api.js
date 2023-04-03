@@ -23,5 +23,4 @@ export default {
     async me() {
         return axios.get('/me');
     },
-
 }
