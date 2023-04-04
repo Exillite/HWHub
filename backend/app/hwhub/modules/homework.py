@@ -39,7 +39,7 @@ def check_permision(user: schemas.User, homework_id: str = None, student_group_i
 
 
 @router.post("/")
-def create_new_homework(new_hw: schemas.HomeworkCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def create_new_homework(new_hw: schemas.HomeworkCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id=new_hw.student_group_id):
         return {"status": 400}
     try:
@@ -52,7 +52,7 @@ def create_new_homework(new_hw: schemas.HomeworkCreate, current_user: schemas.Us
 
 
 @router.get("/{homework_id}")
-def get_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
@@ -65,7 +65,7 @@ def get_homework(homework_id: str, current_user: schemas.User = Depends(auth.get
 
 
 @router.put("/{homework_id}")
-def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=homework_id, perm="e"):
         return {"status": 400}
     try:
@@ -78,7 +78,7 @@ def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, current_use
 
 
 @router.delete("/{homework_id}")
-def delete_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def delete_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=homework_id, perm="e"):
         return {"status": 400}
     try:
@@ -88,7 +88,7 @@ def delete_homework(homework_id: str, current_user: schemas.User = Depends(auth.
         return {"status": 500, "error": str(e)}
     
 @router.get("/{homework_id}/results")
-def get_homework_results(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_homework_results(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
