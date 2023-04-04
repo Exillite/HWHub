@@ -18,12 +18,12 @@ class UserModel(Document):
     def to_json(self):
         user_dict = {
             'id': str(self.id),
+            'login': self.login,
             'role': self.role,
             'name': self.name,
             'surname': self.surname,
             'patronymic': self.patronymic,
             'email': self.email,
-            'students_groups': [sg.to_json() for sg in self.students_groups] if self.students_groups else [],
             'is_active': self.is_active,
         }
         
@@ -94,6 +94,7 @@ class SubmissionModel(Document):
     def to_json(self):
         submission = {
             'id': str(self.id),
+            'student': self.student.to_json(),
             'homework': self.homework.to_json(),
             'points': self.points,
             'fine': self.fine,
