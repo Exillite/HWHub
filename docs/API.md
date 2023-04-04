@@ -1,12 +1,13 @@
-# API Documentation
-# Документаия к API находится в разработке и будет сильно изменина в ближайшее время
+API Documentation
+**Документаия к API находится в разработке и будет сильно изменина в ближайшее время**
 
 ## __Objects__
 
-- [User](#user)
-- [StudentGroup](#studentgroup)
-- [Homework](#homework)
-- [Submission](#submission)
+- [__Objects__](#objects)
+  - [User](#user)
+  - [StudentGroup](#studentgroup)
+  - [Homework](#homework)
+  - [Submission](#submission)
 
 ---
 ### User
@@ -69,7 +70,7 @@ Example:
 ### Homework
 - id - unique identifier primary key
 - title (string) - title of homework
-- file (string) - link to file
+- files (array of URLs) - link to file
 - student_group (StudentGroup) - student group
 - uploaded_at (datetime) - date and time of upload
 - deadline (datetime) - deadline date and time

@@ -55,7 +55,7 @@ class StudentGroupModel(Document):
 
 class HomeworkModel(Document):
     title = StringField(required=True)
-    file = URLField(required=True)
+    file = ListField(URLField(required=True))
     student_group = ReferenceField(StudentGroupModel, required=True)
     uploaded_at = DateTimeField(required=True)
     deadline = DateTimeField(required=True)

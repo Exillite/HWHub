@@ -101,6 +101,30 @@ def get_all_homeworks_from_student_group(student_group_id: str, current_user: sc
         return {"status": 500, "error": str(e)}
 
 
+@router.get("/{student_group_id}/students")
+def get_student_groups_students(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="r"):
+        return {"status": 400}
+    try:
+        stdg = crud.get_student_group(student_group_id)
+        students = crud.get_students_from_students_group(stdg)
+        return {"status": 200, "users": [std.to_json() for std in students]}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.get("/{student_group_id}/consultants")
+def get_student_groups_consultants(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="r"):
+        return {"status": 400}
+    try:
+        stdg = crud.get_student_group(student_group_id)
+        students = crud.get_consultants_from_students_group(stdg)
+        return {"status": 200, "users": [std.to_json() for std in students]}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
 @router.post("/{student_group_id}/kick/{user_id}")
 async def kick_user_from_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="e"):
@@ -118,7 +142,12 @@ async def get_results(student_group_id: str, current_user: schemas.User = Depend
         return {"status": 400}
     try:
         stg = crud.get_student_group(student_group_id)
-        students = [st.to_json() for st in crud.get_students_from_students_group(stg)]
+        stds = crud.get_students_from_students_group(stg)
+        students = [st.to_json() for st in stds]
         
-        for student in students:
-            student['submissions'] = [sub.to_json() for sub in crud.get_submissions_by_student]
+        for i in range(len(students)):
+            students[i]['submissions'] = [sub.to_json() for sub in crud.get_submissions_by_student(stds[i])]
+        
+        return {"status": 200, "users": students}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
