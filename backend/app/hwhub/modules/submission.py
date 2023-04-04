@@ -47,7 +47,7 @@ def check_permision(user: schemas.User, submission_id: str = None, homework_id: 
 
 
 @router.post("/")
-def create_new_submission(new_sub: schemas.SubmissionCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def create_new_submission(new_sub: schemas.SubmissionCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=new_sub.homework_id):
         return {"status": 400}
     try:
@@ -60,7 +60,7 @@ def create_new_submission(new_sub: schemas.SubmissionCreate, current_user: schem
 
 
 @router.get("/{submission_id}")
-def get_submission(submission_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_submission(submission_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, submission_id=submission_id, perm="r"):
         return {"status": 400}
     try:
@@ -73,7 +73,7 @@ def get_submission(submission_id: str, current_user: schemas.User = Depends(auth
 
 
 @router.put("/{submission_id}")
-def edit_submission(submission_id: str, edit_sub: schemas.SubmissionUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def edit_submission(submission_id: str, edit_sub: schemas.SubmissionUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, submission_id=submission_id, perm="e"):
         return {"status": 400}
     try:
@@ -86,7 +86,7 @@ def edit_submission(submission_id: str, edit_sub: schemas.SubmissionUpdate, curr
 
 
 @router.delete("/{submission_id}")
-def delete_submission(submission_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def delete_submission(submission_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, submission_id=submission_id, perm="e"):
         return {"status": 400}
     try:

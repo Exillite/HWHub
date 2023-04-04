@@ -36,7 +36,7 @@ def check_permision(user: schemas.User, student_group_id: str = None, perm="c") 
 
 
 @router.post("/")
-def create_new_student_group(new_stg: schemas.StudentGroupCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def create_new_student_group(new_stg: schemas.StudentGroupCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     """
     400 - отказано в доступе
     """
@@ -53,7 +53,7 @@ def create_new_student_group(new_stg: schemas.StudentGroupCreate, current_user: 
 
 
 @router.get("/{student_group_id}")
-def get_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="r"):
         return {"status": 400}
     try:
@@ -66,7 +66,7 @@ def get_student_group(student_group_id: str, current_user: schemas.User = Depend
 
 
 @router.put("/{student_group_id}")
-def edit_student_group(student_group_id: str, edit_stg: schemas.StudentGroupUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def edit_student_group(student_group_id: str, edit_stg: schemas.StudentGroupUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="e"):
         return {"status": 400}
     try:
@@ -79,7 +79,7 @@ def edit_student_group(student_group_id: str, edit_stg: schemas.StudentGroupUpda
 
 
 @router.delete("/{student_group_id}")
-def delete_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def delete_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="e"):
         return {"status": 400}
     try:
@@ -90,7 +90,7 @@ def delete_student_group(student_group_id: str, current_user: schemas.User = Dep
 
 
 @router.get("/{student_group_id}/homeworks")
-def get_all_homeworks_from_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_all_homeworks_from_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="r"):
         return {"status": 400}
     try:
@@ -102,7 +102,7 @@ def get_all_homeworks_from_student_group(student_group_id: str, current_user: sc
 
 
 @router.get("/{student_group_id}/students")
-def get_student_groups_students(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_student_groups_students(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="r"):
         return {"status": 400}
     try:
@@ -114,7 +114,7 @@ def get_student_groups_students(student_group_id: str, current_user: schemas.Use
 
 
 @router.get("/{student_group_id}/consultants")
-def get_student_groups_consultants(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+async def get_student_groups_consultants(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="r"):
         return {"status": 400}
     try:
