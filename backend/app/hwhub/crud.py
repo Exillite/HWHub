@@ -180,12 +180,6 @@ def recalculate_homework_marks(hw: HomeworkModel):
         sub.mark = calculation.calculate_mark(hw.points, sub.points, hw.mark_formula, sub.fine)
         sub.save()
 
-
-def get_all_students_group_by_user(user: UserModel) -> list:
-    stg = StudentGroupModel.objects(user=user)
-    return list(stg)
-
-
 def get_homeworks_by_students_group(std: StudentGroupModel) -> list:
     homeworks = HomeworkModel.objects(student_group=std)
     return list(homeworks)
@@ -211,3 +205,24 @@ def get_user_by_login(login: str) -> UserModel:
     if user:
         return user
     return None
+
+
+def get_students_from_students_group(std: StudentGroupModel):
+    return UserModel.objects(students_groups=std, role="student")
+
+def get_consultants_from_students_group(std: StudentGroupModel):
+    return UserModel.objects(students_groups=std, role="consultant")
+
+
+def get_students_group_by_teacher(teacher_id):
+    user = UserModel.objects(pk=teacher_id).first()
+    stgs = StudentGroup.objects(teacher=user)
+    return list(stgs)
+
+
+def remove_user_from_student_group(student_group_id: str, user_id: str):
+    student_group = StudentGroupModel.objects.get(id=student_group_id)
+    user = UserModel.objects.get(id=user_id)
+    if student_group in user.students_groups:
+        user.students_groups.remove(student_group)
+        user.save()

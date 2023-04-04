@@ -87,3 +87,38 @@ def delete_student_group(student_group_id: str, current_user: schemas.User = Dep
         return {"status": 200}
     except Exception as e:
         return {"status": 500, "error": str(e)}
+
+
+@router.get("/{student_group_id}/homeworks")
+def get_all_homeworks_from_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="r"):
+        return {"status": 400}
+    try:
+        stg = crud.get_student_group(student_group_id)
+        homeworks = crud.get_homeworks_by_students_group(stg)
+        return {"status": 200, "homeworks": [hw.to_json() for hw in homeworks]}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.post("/{student_group_id}/kick/{user_id}")
+async def kick_user_from_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="e"):
+        return {"status": 400}
+    try:
+        crud.remove_user_from_student_group(student_group_id, user_id)
+        return {"status": 200}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.get("/{student_group_id}/get_results")
+async def get_results(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="r"):
+        return {"status": 400}
+    try:
+        stg = crud.get_student_group(student_group_id)
+        students = [st.to_json() for st in crud.get_students_from_students_group(stg)]
+        
+        for student in students:
+            student['submissions'] = [sub.to_json() for sub in crud.get_submissions_by_student]
