@@ -86,7 +86,8 @@ async def delete_homework(homework_id: str, current_user: schemas.User = Depends
         return {"status": 200}
     except Exception as e:
         return {"status": 500, "error": str(e)}
-    
+
+
 @router.get("/{homework_id}/results")
 async def get_homework_results(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, homework_id=homework_id, perm="r"):

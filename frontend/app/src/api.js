@@ -126,4 +126,33 @@ export default {
     async delete_submission(submission_id) {
         return axios.delete(`/submission/${submission_id}`);
     },
+
+
+    async get_all_users_stdents_groups(user_id) {
+        return axios.get(`/user/${user_id}/student_groups`);
+    },
+
+    async get_all_homeworks_from_student_group(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/homeworks`);
+    },
+
+    async get_student_groups_students(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/students`);
+    },
+
+    async get_student_groups_consultants(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/consultants`);
+    },
+
+    async kick_user_from_students_group(student_group_id, user_id) {
+        return axios.post(`/student_group/${student_group_id}/kick/${user_id}`);
+    },
+
+    async get_student_group_results(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/get_results`);
+    },
+
+    async get_homework_results(student_group_id) {
+        return axios.get(`/homework/${homework_id}/results`);
+    },
 }
