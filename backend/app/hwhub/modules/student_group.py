@@ -125,7 +125,7 @@ async def get_student_groups_consultants(student_group_id: str, current_user: sc
         return {"status": 500, "error": str(e)}
 
 
-@router.post("/{student_group_id}/kick/{user_id}")
+@router.patch("/{student_group_id}/kick/{user_id}")
 async def kick_user_from_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not check_permision(current_user, student_group_id, perm="e"):
         return {"status": 400}
