@@ -216,7 +216,7 @@ def get_consultants_from_students_group(std: StudentGroupModel):
 
 def get_students_group_by_teacher(teacher_id):
     user = UserModel.objects(pk=teacher_id).first()
-    stgs = StudentGroup.objects(teacher=user)
+    stgs = StudentGroupModel.objects(teacher=user)
     return list(stgs)
 
 
