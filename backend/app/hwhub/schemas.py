@@ -5,7 +5,7 @@ import datetime
 
 
 class User(BaseModel):
-    pk: str
+    id: str
     login: str
     role: str
     name: str
