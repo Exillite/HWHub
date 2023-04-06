@@ -21,7 +21,7 @@ async def registaration_new_user(user: schemas.UserCreate):
         pwd = str(user.password)
         user.password = auth.get_password_hash(pwd)
         new_user = crud.create_user(user)
-        return {"status": status_code, "new_user_id": str(new_user.pk)}
+        return {"status": status_code, "user_id": str(new_user.pk)}
     except Exception as e:
         return {"status": 500, "error": str(e)}
 
