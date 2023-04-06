@@ -1,13 +1,8 @@
 API Documentation
+
 **Документаия к API находится в разработке и будет сильно изменина в ближайшее время**
 
-## __Objects__
-
-- [__Objects__](#objects)
-  - [User](#user)
-  - [StudentGroup](#studentgroup)
-  - [Homework](#homework)
-  - [Submission](#submission)
+# __Objects__
 
 ---
 ### User
@@ -23,7 +18,7 @@ API Documentation
 - is_active (bool) - is user active
 
 Example:
-```
+```json
 {
     "id": "123456",
     "login": "johndoe",
@@ -46,7 +41,7 @@ Example:
 - is_active (bool) - is group active
 
 Example:
-```
+```json
 {
     "id": "123456",
     "title": "Computer Science 101",
@@ -80,7 +75,7 @@ Example:
 - is_active (bool) - is homework active
 
 Example:
-```
+```json
 {
     "id": "123456",
     "title": "Programming Assignment 1",
@@ -124,7 +119,7 @@ Example:
 - is_active (bool) - is submission active
 
 Example:
-```
+```json
 {
     "id": 987654,
     "student": {
@@ -133,7 +128,7 @@ Example:
         "role": "student",
         "name": "John",
         "surname": "Smith",
-        "patronymic": null,
+        "patronymic": "W.",
         "email": "johnsmith@example.com",
         "vk_id": "123456",
         "telegram_id": null,
@@ -177,3 +172,825 @@ Example:
 }
 
 ```
+
+# __Methods__
+---
+
+## **Main**
+
+### Get My Accaunt
+- URL: `/api/v0.1/me`
+- method: **GET**
+- auth required: **YES**
+- response body:
+```json
+{
+    "status": int,
+    "user": {
+        "id": str,
+        "login": str,
+        "role": str,
+        "name": str,
+        "surname": str,
+        "patronymic": str,
+        "email": str,
+        "vk_id": int,
+        "telegram_id": int,
+        "is_active": bool,
+    }
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+## **Auth**
+
+### Get My Accaunt
+- URL: `/api/v0.1/auth/token`
+- method: **POST**
+- auth required: **NO**
+- description: Return token, which your need to save on client side.
+- request body:
+```json
+{
+    "username": str,
+    "password": str,
+}
+```
+- response body:
+```json
+{
+    "access_token": "string",
+    "token_type": "string"
+}
+```
+
+## **User**
+
+### Create New User
+- URL: `/api/v0.1/user/`
+- method: **POST**
+- auth required: **NO**
+- description: 
+- request body:
+```json
+{
+    "login": str,
+    "name": str,
+    "surname": str,
+    "patronymic": str,
+    "email": str,
+    "password": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "user_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 202 - User email is invalid or already exists.
+  - 203 - User password is invalid.
+  - 204 - User with this login already exists.
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Get User
+- URL: `/api/v0.1/user/{user_id}`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "user": {
+        "id": str,
+        "login": str,
+        "role": str,
+        "name": str,
+        "surname": str,
+        "patronymic": str,
+        "email": str,
+        "vk_id": int,
+        "telegram_id": int,
+        "is_active": bool,
+    },
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Edit User
+- URL: `/api/v0.1/user/{user_id}`
+- method: **PUT**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "name": str,
+    "surname": str,
+    "patronymic": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "user_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Delete User
+- URL: `/api/v0.1/user/{user_id}`
+- method: **DELETE**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get All User`s Student Groups
+- URL: `/api/v0.1/user/{user_id}/student_groups`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "student_groups": [
+        {
+            "id": str,
+            "title": str,
+            "teacher": {
+                "id": str,
+                "login": str,
+                "role": str,
+                "name": str,
+                "surname": str,
+                "patronymic": str,
+                "email": str,
+                "vk_id": int,
+                "telegram_id": int,
+                "is_active": bool,
+            },
+            "connect_code": str,
+            "is_active": bool,
+        }
+    ],
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+
+## **Student Group**
+
+### Create Student Group
+- URL: `/api/v0.1/student_group/`
+- method: **POST**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "title": str,
+    "teacher_id": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "student_group_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Get Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "student_group": {
+        "id": str,
+        "title": str,
+        "teacher": {
+            "id": str,
+            "login": str,
+            "role": str,
+            "name": str,
+            "surname": str,
+            "patronymic": str,
+            "email": str,
+            "vk_id": int,
+            "telegram_id": int,
+            "is_active": bool,
+        },
+        "connect_code": str,
+        "is_active": bool,
+    },
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Edit Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}`
+- method: **PUT**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "title": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "student_group_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Delete Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}`
+- method: **DELETE**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get Homeworks from Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}/homeworks`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "homeworks": [
+        {
+            "id": str,
+            "title": str,
+            "file": str,
+            "student_group": {
+                "id": str,
+                "title": str,
+                "teacher": {
+                    "id": str,
+                    "login": str,
+                    "role": str,
+                    "name": str,
+                    "surname": str,
+                    "patronymic": str,
+                    "email": str,
+                    "vk_id": int,
+                    "telegram_id": int,
+                    "is_active": bool,
+                },
+                "connect_code": str,
+                "is_active": bool,
+            },
+            "uploaded_at": datetime,
+            "deadline": datetime,
+            "last_updated_at": datetime,
+            "points": [float],
+            "mark_formula": str,
+            "is_active": bool,
+        }
+    ],
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get Students from Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}/students`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "users": [
+        {
+            "id": str,
+            "login": str,
+            "role": str,
+            "name": str,
+            "surname": str,
+            "patronymic": str,
+            "email": str,
+            "vk_id": int,
+            "telegram_id": int,
+            "is_active": bool,
+        }
+    ],
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get Consultants from Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}/consultants`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "users": [
+        {
+            "id": str,
+            "login": str,
+            "role": str,
+            "name": str,
+            "surname": str,
+            "patronymic": str,
+            "email": str,
+            "vk_id": int,
+            "telegram_id": int,
+            "is_active": bool,
+        }
+    ],
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Kick User from Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}/kick/{user_id}`
+- method: **PATCH**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get Student Group`s results
+- URL: `/api/v0.1/student_group/{student_group_id}/get_results`
+- method: **GET**
+- auth required: **YES**
+- description: Return students list with additional param 'submissions'.
+- response body:
+```json
+{
+    "status": int,
+    "users": [
+        {
+            "id": str,
+            "login": str,
+            "role": str,
+            "name": str,
+            "surname": str,
+            "patronymic": str,
+            "email": str,
+            "vk_id": int,
+            "telegram_id": int,
+            "is_active": bool,
+
+            "submissions": [
+                {
+                    {
+                        "id": str,
+                        "student": {
+                            "id": str,
+                            "login": str,
+                            "role": str,
+                            "name": str,
+                            "surname": str,
+                            "patronymic": str,
+                            "email": str,
+                            "vk_id": int,
+                            "telegram_id": int,
+                            "is_active": bool,
+                        },
+                        "homework": {
+                            "id": str,
+                            "title": str,
+                            "file": URL,
+                            "student_group": {
+                                "id": str,
+                                "title": str,
+                                "teacher": {
+                                    "id": str,
+                                    "login": str,
+                                    "role": str,
+                                    "name": str,
+                                    "surname": str,
+                                    "patronymic": str,
+                                    "email": str,
+                                    "vk_id": int,
+                                    "telegram_id": int,
+                                    "is_active": int,
+                                },
+                                "connect_code": str,
+                                "is_active": bool,
+                            },
+                            "uploaded_at": datetime,
+                            "deadline": datetime,
+                            "last_updated_at": datetime,
+                            "points": [float],
+                            "mark_formula": str,
+                            "is_active": bool,
+                        },
+                        "points": [float],
+                        "fine": float,
+                        "mark": float,
+                        "start_submit": datetime,
+                        "last_updated_at": datetime,
+                        "is_active": bool,
+                    }
+                }
+            ]
+        }
+    ],
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+
+## **Homework**
+
+### Create Homework
+- URL: `/api/v0.1/homework/`
+- method: **POST**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "title": str,
+    "file": URL,
+    "student_group_id": str,
+    "deadline": datetime.datetime,
+    "points": [float],
+    "mark_formula": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "homework_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Get Homework
+- URL: `/api/v0.1/homework/{homework_id}`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "homework": {
+        "id": str,
+        "title": str,
+        "file": URL,
+        "student_group": {
+            "id": str,
+            "title": str,
+            "teacher": {
+                "id": str,
+                "login": str,
+                "role": str,
+                "name": str,
+                "surname": str,
+                "patronymic": str,
+                "email": str,
+                "vk_id": int,
+                "telegram_id": int,
+                "is_active": int,
+            },
+            "connect_code": str,
+            "is_active": bool,
+        },
+        "uploaded_at": datetime,
+        "deadline": datetime,
+        "last_updated_at": datetime,
+        "points": [float],
+        "mark_formula": str,
+        "is_active": bool,
+    },
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Edit Homework
+- URL: `/api/v0.1/homework/{homework_id}`
+- method: **PUT**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "title": str,
+    "file": str,
+    "deadline": datatime,
+    "points": [float],
+    "mark_formula": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "homework_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Delete Homework
+- URL: `/api/v0.1/homework/{homework_id}`
+- method: **DELETE**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Get Homework`s Results
+- URL: `/api/v0.1/homework/{homework_id}/submissions`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "submissions": [
+        {
+            {
+                "id": str,
+                "student": {
+                    "id": str,
+                    "login": str,
+                    "role": str,
+                    "name": str,
+                    "surname": str,
+                    "patronymic": str,
+                    "email": str,
+                    "vk_id": int,
+                    "telegram_id": int,
+                    "is_active": bool,
+                },
+                "homework": {
+                    "id": str,
+                    "title": str,
+                    "file": URL,
+                    "student_group": {
+                        "id": str,
+                        "title": str,
+                        "teacher": {
+                            "id": str,
+                            "login": str,
+                            "role": str,
+                            "name": str,
+                            "surname": str,
+                            "patronymic": str,
+                            "email": str,
+                            "vk_id": int,
+                            "telegram_id": int,
+                            "is_active": int,
+                        },
+                        "connect_code": str,
+                        "is_active": bool,
+                    },
+                    "uploaded_at": datetime,
+                    "deadline": datetime,
+                    "last_updated_at": datetime,
+                    "points": [float],
+                    "mark_formula": str,
+                    "is_active": bool,
+                },
+                "points": [float],
+                "fine": float,
+                "mark": float,
+                "start_submit": datetime,
+                "last_updated_at": datetime,
+                "is_active": bool,
+            }
+        }
+    ]
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+
+## **Submission**
+
+### Create Submission
+- URL: `/api/v0.1/submission/`
+- method: **POST**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "student_id": str,
+    "homework_id": str,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "submission_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Get Submission
+- URL: `/api/v0.1/submission/{submission_id}`
+- method: **GET**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+    "submission": {
+        "id": str,
+        "student": {
+            "id": str,
+            "login": str,
+            "role": str,
+            "name": str,
+            "surname": str,
+            "patronymic": str,
+            "email": str,
+            "vk_id": int,
+            "telegram_id": int,
+            "is_active": bool,
+        },
+        "homework": {
+            "id": str,
+            "title": str,
+            "file": URL,
+            "student_group": {
+                "id": str,
+                "title": str,
+                "teacher": {
+                    "id": str,
+                    "login": str,
+                    "role": str,
+                    "name": str,
+                    "surname": str,
+                    "patronymic": str,
+                    "email": str,
+                    "vk_id": int,
+                    "telegram_id": int,
+                    "is_active": int,
+                },
+                "connect_code": str,
+                "is_active": bool,
+            },
+            "uploaded_at": datetime,
+            "deadline": datetime,
+            "last_updated_at": datetime,
+            "points": [float],
+            "mark_formula": str,
+            "is_active": bool,
+        },
+        "points": [float],
+        "fine": float,
+        "mark": float,
+        "start_submit": datetime,
+        "last_updated_at": datetime,
+        "is_active": bool,
+    }
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Edit Submission
+- URL: `/api/v0.1/submission/{submission_id}`
+- method: **PUT**
+- auth required: **YES**
+- description: 
+- request body:
+```json
+{
+    "points": [float],
+    "fine": float,
+}
+```
+- response body:
+```json
+{
+    "status": int,
+    "submission_id": str,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Permission denied
+  - 500 - Server error
+
+### Delete Submission
+- URL: `/api/v0.1/submission/{submission_id}`
+- method: **DELETE**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error

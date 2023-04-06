@@ -91,7 +91,6 @@ export default {
 
     async edit_homework(homework_id, title, file, deadline, points, mark_formula) {
         return axios.put(`/homework/${homework_id}`, {
-            homework_id: homework_id,
             title: title,
             file: file,
             deadline: deadline,
@@ -153,6 +152,6 @@ export default {
     },
 
     async get_homework_results(student_group_id) {
-        return axios.get(`/homework/${homework_id}/results`);
+        return axios.get(`/homework/${homework_id}/submissions`);
     },
 }
