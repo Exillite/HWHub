@@ -1,17 +1,17 @@
 <template>
-  <body>
-    <div class="app">
-      <router-view></router-view>
-    </div>
-  </body>
+    <v-app id="inspire">
+      <v-app-bar>
+        <v-toolbar-title>HWHUB</v-toolbar-title>
+      </v-app-bar>
+      <v-main>
+        <v-container>
+          <router-view />
+        </v-container>
+      </v-main>
+  </v-app>
+  
 </template>
 
-<script>
-export default{
-  components:{
-  }
-}
+<script setup>
+  //
 </script>
-<style>
-</style>
-
