@@ -5,7 +5,7 @@
 
 <script>
 
-    import api from '@/api'
+    import api from '@/api.js'
     import control from '@/control';
 
     export default {

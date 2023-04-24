@@ -35,7 +35,7 @@ def get_password_hash(password):
 def get_user(login: str):
     usr_mdl = crud.get_user_by_login(login)
     if usr_mdl:
-        return schemas.UserInDB(pk=str(usr_mdl.pk), 
+        return schemas.UserInDB(id=str(usr_mdl.pk), 
                                 login=usr_mdl.login, 
                                 password=usr_mdl.password,
                                 role=usr_mdl.role,

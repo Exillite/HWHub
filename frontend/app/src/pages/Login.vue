@@ -13,23 +13,22 @@
             <v-alert
                 v-if="error"
                 type="error"
+                title="Ошибка"
                 dismissible
-            >
-                <v-alert-title>Ошибка</v-alert-title>
-                <v-alert-description>Не верный логин или пароль</v-alert-description>
+            > {{ error_msg }}
             </v-alert>
             <h2>Вход</h2>
             <form @submit.prevent="submit">
             <v-text-field
-                v-model="email"
-                label="E-mail"
-                type="email"
+                v-model="form.login"
+                label="Логин"
+                type="text"
                 variant="outlined"
                 required
-                autocomplete="email"
+                autocomplete="nickname"
             ></v-text-field>
             <v-text-field
-                v-model="password"
+                v-model="form.password"
                 label="Пароль"
                 variant="outlined"
                 type="password"
@@ -46,33 +45,33 @@
   </template>
 
 <script>
-    import api from '@/api'
-    import cookie from '@/cookie'
+    import api from '@/api.js'
 
     export default {
         data() {
             return {
-                email: '',
-                password: '',
+                form: {
+                    login: '',
+                    password: '',
+                },
                 error: false,
+                error_msg: 'Ошибка',
             }
         },
         methods: {
             submit() {
-                api.login(this.email, this.password).then((response) => {
-                    // console.log(response);
-                    if (response.data.status == 200) {
-                        const st = JSON.stringify(response.data.tocken)
-                        const uid = JSON.stringify(response.data.user_id)
-                        // set cookie token on month
-                        cookie.setCookie('token', st, {'max-age': 2592000});
-                        cookie.setCookie('user_id', uid, {'max-age': 2592000});
+                api.authorize(this.form.login, this.form.password).then((response) => {
+                    console.log(response);
+                    if (response.status == 200) {
+                        let token = response.data.access_token;
+                        localStorage.setItem('token', token)
                         this.$router.push({name: 'Main'});
-
                     } else {
+                        this.error_msg = 'Не верный логин или пароль.'
                         this.error = true;
-                    }
+                    } 
                 }).catch((error) => {
+                    this.error_msg = 'Не верный логин или пароль.'
                     this.error = true;
                     console.log(error);
                 })

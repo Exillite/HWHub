@@ -16,7 +16,7 @@
                 dismissible
             >
                 <v-alert-title>Ошибка</v-alert-title>
-                <v-alert-description>Данные не корректны</v-alert-description>
+                <v-alert-description> {{ error_msg }} </v-alert-description>
             </v-alert>
             <h2>Регистрация</h2>
             <v-form @submit.prevent="submit" v-model="isFormValid">
@@ -38,13 +38,21 @@
                 autocomplete="family-name"
             ></v-text-field>
             <v-text-field
+                v-model="form.patronymic"
+                label="Отчество"
+                variant="outlined"
+                type="text"
+                required
+                :rules="patronymicRules"
+            ></v-text-field>
+            <v-text-field
                 v-model="form.login"
                 label="Логин"
                 variant="outlined"
                 type="text"
                 required
                 :rules="loginRules"
-                autocomplete="nickname"
+                autocomplete="login"
             ></v-text-field>
             <v-text-field
                 v-model="form.email"
@@ -82,20 +90,23 @@
   </template>
 
 <script>
-    import api from '@/api'
+    import api from '@/api.js'
 
     export default {
         data() {
             return {
                 form: {
+                    login: '',
                     name: '',
                     surname: '',
-                    login: '',
+                    patronymic: '',
                     email: '',
                     password: '',
                     repit_password: '',
                 },
                 error: false,
+                error_msg: 'Ошибка!',
+
                 isFormValid: false,
 
                 nameRules: [
@@ -112,6 +123,9 @@
                 surnameRules: [
                     v => !!v || 'Введите фамилию',
                     v => (v && v.length > 3) || 'Фамилия должна быть более длинной',
+                ],
+                patronymicRules: [
+                    v => !!v || 'Введите отчество',
                 ],
                 loginRules: [
                     v => !!v || 'Введите логин',
@@ -134,13 +148,29 @@
         },
         methods: {
             submit() {
-                api.register(this.form.name, this.form.surname, this.form.login, this.form.email, this.form.password)
+                api.registaration_new_user(this.form.login, this.form.name, this.form.surname, this.form.patronymic, this.form.email, this.form.password)
                     .then(response => {
-                        if (response.data.status == 200) {
-                            this.$router.push({name: 'Main'})
-                        } else {
-                            this.error = true
+                        switch (response.data.status) {
+                            case 200:
+                                this.$router.push({name: 'Main'});
+                                break;
+                            case 202:
+                                this.error_msg = 'Пользователь с таким E-mail уже зарегестрирован.';
+                                break;
+                            case 203:
+                                this.error_msg = 'Не корректный пароль.';
+                                break;
+                            case 204:
+                                this.error_msg = 'Пользователь с таким Login уже зарегестрирован.';
+                                break;
+                            case 500:
+                            case 400:
+                                this.error_msg = 'Ошибка на сервере';
+                                break;
                         }
+
+                        this.error = true;
+
                     })
                     .catch(error => {
                         console.log(error)

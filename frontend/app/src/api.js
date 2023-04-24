@@ -77,7 +77,7 @@ export default {
     async create_new_homework(title, file, student_group_id, deadline, points, mark_formula) {
         return axios.post('/homework', {
             title: title,
-            file: file,
+            file,
             student_group_id: student_group_id,
             deadline: deadline,
             points: points,
@@ -92,7 +92,7 @@ export default {
     async edit_homework(homework_id, title, file, deadline, points, mark_formula) {
         return axios.put(`/homework/${homework_id}`, {
             title: title,
-            file: file,
+            file,
             deadline: deadline,
             points: points,
             mark_formula: mark_formula,
@@ -151,7 +151,7 @@ export default {
         return axios.get(`/student_group/${student_group_id}/get_results`);
     },
 
-    async get_homework_results(student_group_id) {
+    async get_homework_results(homework_id) {
         return axios.get(`/homework/${homework_id}/submissions`);
     },
 }
