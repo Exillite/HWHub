@@ -1,281 +1,157 @@
-import Axios from 'axios';
-import cookie from '@/cookie'
+import axios from 'axios';
 
-const api_url = '/api/v1';
+const token = localStorage.getItem('token');
+
+axios.defaults.baseURL = '/api/v0.1';
+axios.defaults.headers.common['accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.put['Content-Type'] = 'application/json';
+if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 
 export default {
-
-    async test() {
-        return Axios.post("http://localhost:8000/api", {}, {
-            params: {
-                token: cookie.getCookie('token'),
+    async authorize(login, password) {
+        return axios.post('/auth/token', { 'username': login, 'password': password }, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
             }
         });
     },
 
-    async register(name, surname, login, email, password) {
-        return Axios.post(api_url + '/register', {
+    async me() {
+        return axios.get('/me');
+    },
+
+    async registaration_new_user(login, name, surname, patronymic, email, password) {
+        return axios.post('/user', {
+            login: login,
             name: name,
             surname: surname,
-            login: login,
+            patronymic: patronymic,
             email: email,
             password: password,
         });
     },
 
-    async login(email, password) {
-        return Axios.post(api_url + '/login', {
-            email: email,
-            password: password
+    async get_user(user_id) {
+        return axios.get(`/user/${user_id}`);
+    },
+
+    async edit_user(user_id, name, surname, patronymic) {
+        return axios.put(`/user/${user_id}`, {
+            name: name,
+            surname: surname,
+            patronymic: patronymic,
         });
     },
 
-    async create_shop(title) {
-        return Axios.post(api_url + "/shop", {
+    async delete_user(user_id) {
+        return axios.delete(`/user/${user_id}`);
+    },
+
+
+    async create_new_student_group(title, teacher_id) {
+        return axios.post('/student_group', {
             title: title,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
+            teacher_id: teacher_id,
+        });
     },
 
-    async get_shop(shop_slug) {
-        return Axios.get(api_url + `/shop/${shop_slug}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
+    async get_student_group(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}`);
     },
 
-    async get_all_users_shops() {
-        return Axios.get(api_url + "/user/shops", {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async add_shop_admin(user_email, shop_slug) {
-        return Axios.post(api_url + `/shop/${shop_slug}/admin`, {
-            email: user_email,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async create_product(title, category, price, coef, slug, shop_id) {
-        return Axios.post(api_url + "/product", {
+    async edit_student_group(student_group_id, title) {
+        return axios.put(`/student_group/${student_group_id}`, {
             title: title,
-            category: category,
-            price: price,
-            slug: slug,
-            coef: coef,
-            shop_id: shop_id,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async get_shops_products(shop_slug) {
-        return Axios.get(api_url + `/shop/${shop_slug}/products`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async get_product(product_slug) {
-        return Axios.get(api_url + `/product/${product_slug}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
         });
     },
 
-    async delete_product(product_slug) {
-        return Axios.delete(api_url + `/product/${product_slug}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        });
+    async delete_student_group(student_group_id) {
+        return axios.delete(`/student_group/${student_group_id}`);
     },
 
-    async update_product(product_slug, title, category, price, coef) {
-        return Axios.put(api_url + `/product/${product_slug}`, {
+
+    async create_new_homework(title, file, student_group_id, deadline, points, mark_formula) {
+        return axios.post('/homework', {
             title: title,
-            category: category,
-            price: price,
-            coef: coef,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async get_item(item_id) {
-        return Axios.get(api_url + `/item/${item_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async delete_item(item_id) {
-        return Axios.delete(api_url + `/item/${item_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
+            file: file,
+            student_group_id: student_group_id,
+            deadline: deadline,
+            points: points,
+            mark_formula: mark_formula,
         });
     },
 
-    async create_item(product_id, params) {
-        // params example: {cnt: 2, a: 1, b: 2}
-        return Axios.post(api_url + "/item", {
-            product_id: product_id,
-            params: params,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
+    async get_homework(homework_id) {
+        return axios.get(`/homework/${homework_id}`);
     },
 
-    async update_item(item_id, params) {
-        // params example: {cnt: 2, a: 1, b: 2}
-        return Axios.put(api_url + `/item/${item_id}`, {
-            params: params,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async get_products_items(product_slug) {
-        return Axios.get(api_url + `/product/${product_slug}/items`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async create_tempalte(title, shop_id, products) {
-        // products example: {"products": [{ "product_id": "string" }, { "product_id": "string" }]}
-        return Axios.post(api_url + "/template", {
+    async edit_homework(homework_id, title, file, deadline, points, mark_formula) {
+        return axios.put(`/homework/${homework_id}`, {
             title: title,
-            shop_id: shop_id,
-            products: products,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async get_shops_templates(shop_slug) {
-        return Axios.get(api_url + `/shop/${shop_slug}/templates`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async get_template(template_id) {
-        return Axios.get(api_url + `/template/${template_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async delete_template(template_id) {
-        return Axios.delete(api_url + `/template/${template_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async create_order(shop_id, items) {
-        // items example: {cnt: 2, items: [{"item_id": "string", cnt: 2, a: "float", b: "float"}, {"item_id": "string", cnt: 1, a: "float"}]}
-        return Axios.post(api_url + "/order", {
-            shop_id: shop_id,
-            items: items,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async order_price(shop_id, items) {
-        // items example: {cnt: 2, items: [{"item_id": "string", cnt: 2, a: "float", b: "float"}, {"item_id": "string", cnt: 1, a: "float"}]}
-        return Axios.post(api_url + "/order/price", {
-            shop_id: shop_id,
-            items: items,
-        }, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            }
-        })
-    },
-
-    async get_order(order_id) {
-        return Axios.get(api_url + `/order/${order_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async delete_order(order_id) {
-        return Axios.delete(api_url + `/order/${order_id}`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async get_shops_orders(shop_id) {
-        return Axios.get(api_url + `/shop/${shop_id}/orders`, {
-            params: {
-                token: cookie.getCookie('token'),
-                user_id: cookie.getCookie('user_id'),
-            },
-        })
-    },
-
-    async get_tmplate_prices(template_type, data) {
-        return Axios.post(api_url + `/price/${template_type}`, {
-            data: data,
+            file: file,
+            deadline: deadline,
+            points: points,
+            mark_formula: mark_formula,
         });
+    },
+
+    async delete_homework(homework_id) {
+        return axios.delete(`/homework/${homework_id}`);
+    },
+
+
+    async create_new_submission(student_id, homework_id) {
+        return axios.post('/submission', {
+            student_id: student_id,
+            homework_id: homework_id,
+        });
+    },
+
+    async get_submission(submission_id) {
+        return axios.get(`/submission/${submission_id}`);
+    },
+
+    async edit_submission(submission_id, points, fine) {
+        return axios.put(`/submission/${submission_id}`, {
+            points: points,
+            fine: fine,
+        });
+    },
+
+    async delete_submission(submission_id) {
+        return axios.delete(`/submission/${submission_id}`);
+    },
+
+
+    async get_all_users_stdents_groups(user_id) {
+        return axios.get(`/user/${user_id}/student_groups`);
+    },
+
+    async get_all_homeworks_from_student_group(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/homeworks`);
+    },
+
+    async get_student_groups_students(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/students`);
+    },
+
+    async get_student_groups_consultants(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/consultants`);
+    },
+
+    async kick_user_from_students_group(student_group_id, user_id) {
+        return axios.post(`/student_group/${student_group_id}/kick/${user_id}`);
+    },
+
+    async get_student_group_results(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/get_results`);
+    },
+
+    async get_homework_results(student_group_id) {
+        return axios.get(`/homework/${homework_id}/submissions`);
     },
 }
