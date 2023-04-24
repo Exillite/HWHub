@@ -14,6 +14,7 @@
                 v-if="error"
                 type="error"
                 title="Ошибка"
+                variant="outlined"
                 dismissible
             > {{ error_msg }}
             </v-alert>

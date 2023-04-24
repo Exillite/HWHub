@@ -27,6 +27,12 @@ const routes = [{
         component: () =>
             import ('@/pages/Registration.vue'),
     },
+    {
+        path: '/groups',
+        name: 'Groups',
+        component: () =>
+            import ('@/pages/Groups.vue'),
+    },
 ]
 
 const router = new createRouter({

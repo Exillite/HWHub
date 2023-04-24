@@ -13,10 +13,10 @@
             <v-alert
                 v-if="error"
                 type="error"
+                title="Ошибка"
+                variant="outlined"
                 dismissible
-            >
-                <v-alert-title>Ошибка</v-alert-title>
-                <v-alert-description> {{ error_msg }} </v-alert-description>
+            > {{ error_msg }}
             </v-alert>
             <h2>Регистрация</h2>
             <v-form @submit.prevent="submit" v-model="isFormValid">
