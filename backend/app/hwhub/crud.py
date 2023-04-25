@@ -152,9 +152,9 @@ def edit_submission(sub: SubmissionUpdate, sub_id) -> SubmissionModel:
     submission = SubmissionModel.objects(pk=sub_id).first()
     if submission:
         submission.fine = sub.fine
-        submission.points = sub.fine
+        submission.points = sub.points
         submission.last_updated_at = datetime.datetime.now()
-        submission.mark = calculation.calculate_mark(submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine)
+        submission.mark = float(calculation.calculate_mark(submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine))
         
         submission.save()
         return submission

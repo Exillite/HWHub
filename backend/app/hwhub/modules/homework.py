@@ -93,7 +93,7 @@ async def get_homework_results(homework_id, current_user: schemas.User = Depends
     if not check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
-        subs = [sub.to_json() for sub in crud.get_submissions_by_homework()]
+        subs = [sub.to_json() for sub in crud.get_submissions_by_homework(homework_id)]
         return {"status": 200, "submissions": subs}
     except Exception as e:
         return {"status": 500, "error": str(e)}
