@@ -83,3 +83,4 @@ async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User 
         return {"status": 200, "student_groups": students_groups}
     except Exception as e:
         return {"status": 500, "error": str(e)}
+    
