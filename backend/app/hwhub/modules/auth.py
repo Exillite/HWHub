@@ -91,7 +91,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def get_current_active_user(
     current_user: schemas.User = Depends(get_current_user)
 ):
-    user = schemas.User(pk=str(current_user.pk), 
+    user = schemas.User(id=str(current_user.id), 
                         login=current_user.login, 
                         role=current_user.role,
                         name=current_user.name,

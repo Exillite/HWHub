@@ -49,10 +49,6 @@ import api from '@/api.js'
 export default {
     data() {
         return {
-            form: {
-                login: '',
-                password: '',
-            },
             groups: [
                 {
                     id: "123456",
@@ -96,25 +92,6 @@ export default {
             error_msg: 'Ошибка',
         }
     },
-    methods: {
-        submit() {
-            api.authorize(this.form.login, this.form.password).then((response) => {
-                console.log(response);
-                if (response.status == 200) {
-                    let token = response.data.access_token;
-                    localStorage.setItem('token', token)
-                    this.$router.push({ name: 'Main' });
-                } else {
-                    this.error_msg = 'Не верный логин или пароль.'
-                    this.error = true;
-                }
-            }).catch((error) => {
-                this.error_msg = 'Не верный логин или пароль.'
-                this.error = true;
-                console.log(error);
-            })
-        }
-    }
 }
 </script>
 

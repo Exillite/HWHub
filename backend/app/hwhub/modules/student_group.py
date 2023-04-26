@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["Student Group"],
 )
 
-def check_permision(user: schemas.User, student_group_id: str = None, perm="c") -> bool:
+def check_permision(user: schemas.User, student_group_id=None, perm="c") -> bool:
     """
     perm:
     c - create new |
@@ -28,10 +28,10 @@ def check_permision(user: schemas.User, student_group_id: str = None, perm="c") 
         for u_stg in user.students_groups:
             if stg.pk == u_stg.pk:
                 return True
-        return stg.teacher.pk == user.pk
+        return stg.teacher.pk == user.id
     if perm == "e":
         stg = crud.get_student_group(student_group_id)
-        return stg.teacher.pk == user.pk
+        return stg.teacher.pk == user.id
     return False
 
 
@@ -149,5 +149,26 @@ async def get_results(student_group_id: str, current_user: schemas.User = Depend
             students[i]['submissions'] = [sub.to_json() for sub in crud.get_submissions_by_student(stds[i])]
         
         return {"status": 200, "users": students}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.get("/{student_group_id}/get_marks")
+async def get_marks(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, student_group_id, perm="r"):
+        return {"status": 400}
+    try:
+        stg = crud.get_student_group(student_group_id)
+        stds = crud.get_students_from_students_group(stg)
+        
+        hws = crud.get_homeworks_by_students_group(stg)
+        
+        resp = {'items': []}
+        
+        for std in stds:
+            resp['items'].append({'user': f"{std.name} {std.surname} {std.patronymic}"})
+
+            for hw in hws:
+                resp['items'][-1][hw.pk] = crud.get_submission_by_homework_and_student(hw, std).mark        
     except Exception as e:
         return {"status": 500, "error": str(e)}

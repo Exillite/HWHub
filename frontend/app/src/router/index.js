@@ -33,6 +33,12 @@ const routes = [{
         component: () =>
             import ('@/pages/Groups.vue'),
     },
+    {
+        path: '/group',
+        name: 'Group',
+        component: () =>
+            import ('@/pages/Group.vue'),
+    },
 ]
 
 const router = new createRouter({
