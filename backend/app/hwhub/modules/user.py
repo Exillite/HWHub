@@ -76,7 +76,10 @@ async def delete_user(user_id: str, current_user: schemas.User = Depends(auth.ge
 
 @router.get("/{user_id}/student_groups")
 async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    user = crud.get_user(user_id)
-    students_groups_where_teacher = crud.get_students_group_by_teacher(user_id)
-    students_groups = [g.to_json() for g in (user.students_groups or [])] + [g.to_json() for g in students_groups_where_teacher]
-    return {"status": 200, "student_groups": students_groups}
+    try:
+        user = crud.get_user(user_id)
+        students_groups_where_teacher = crud.get_students_group_by_teacher(user_id)
+        students_groups = [g.to_json() for g in (user.students_groups or [])] + [g.to_json() for g in students_groups_where_teacher]
+        return {"status": 200, "student_groups": students_groups}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
