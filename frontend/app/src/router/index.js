@@ -39,6 +39,12 @@ const routes = [{
         component: () =>
             import ('@/pages/Group.vue'),
     },
+    {
+        path: '/homework',
+        name: 'Homework',
+        component: () =>
+            import ('@/pages/Homework.vue'),
+    },
 ]
 
 const router = new createRouter({

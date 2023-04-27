@@ -23,18 +23,18 @@ def check_permision(user: schemas.User, homework_id: str = None, student_group_i
     
     if perm == "c":
         stg = crud.get_student_group(student_group_id)
-        return user.role in ["teacher"] and user.pk == stg.teacher.pk
+        return user.role in ["teacher"] and user.id == stg.teacher.id
     if perm == "r":
         hw = crud.get_homework(homework_id)
         stg = crud.get_student_group(hw.student_group.pk)
         for u_stg in user.students_groups:
             if stg.pk == u_stg.pk:
                 return True
-        return stg.teacher.pk == user.pk
+        return stg.teacher.pk == user.id
     if perm == "e":
         hw = crud.get_homework(homework_id)
         stg = crud.get_student_group(hw.student_group.pk)
-        return stg.teacher.pk == user.pk
+        return stg.teacher.pk == user.id
     return False
 
 
@@ -93,7 +93,30 @@ async def get_homework_results(homework_id, current_user: schemas.User = Depends
     if not check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
-        subs = [sub.to_json() for sub in crud.get_submissions_by_homework()]
+        hw = crud.get_homework(homework_id)
+        subs = [sub.to_json() for sub in crud.get_submissions_by_homework(hw)]
         return {"status": 200, "submissions": subs}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.get("/{homework_id}/marks")
+async def get_homework_marks(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not check_permision(current_user, homework_id=homework_id, perm="r"):
+        return {"status": 400}
+    try:
+        hw = crud.get_homework(homework_id)
+        subs = crud.get_submissions_by_homework(hw)
+        
+        resp = {"users": []}
+        
+        for sub in subs:
+            resp["users"].append({"user": f"{sub.user.name} {sub.user.surname} {sub.user.patronymic}"})
+            for i in range(len(sub.points)):
+                resp["users"][-1][i] = sub.points[i]
+            resp["users"][-1]["fine"] = sub.fine
+            resp["users"][-1]["mark"] = sub.mark
+            
+        return {"status": 200, "marks": resp}
     except Exception as e:
         return {"status": 500, "error": str(e)}
