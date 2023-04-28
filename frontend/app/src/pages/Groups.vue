@@ -25,21 +25,17 @@
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
-
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4" lg="3">
-                        <v-btn variant="outlined">
-                            Создать
-                        </v-btn>
-
-                    </v-col>
                 </v-row>
-
+                
+                <v-btn variant="outlined" size="x-large" class="new-group-btn" color="info">
+                    Создать новую группу
+                </v-btn>
             </v-container>
-
+            
         </v-main>
-
+        
     </v-app>
 </template>
 
@@ -95,4 +91,14 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+
+.new-group-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    margin: 40px;
+}
+
+</style>

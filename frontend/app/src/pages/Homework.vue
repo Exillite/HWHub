@@ -89,7 +89,6 @@
                     v-model="new_dedline"
                     required
                   ></v-text-field>
-                  {{ new_points }}
                   <v-table density="compact" hover="true">
                     <thead>
                       <tr>
@@ -110,10 +109,18 @@
                       </tr>
                     </tbody>
                   </v-table>
+                  <v-btn variant="outlined" @click="new_points.push(1)"
+                    >Добавить занятие</v-btn
+                  >
+                  <br />
+                  <br />
 
-                  <v-btn variant="outlined" @click="new_points.push(1)">Добавить занятие</v-btn>
-                  <br />
-                  <br />
+                  <v-text-field
+                    v-model="new_mark_formula"
+                    variant="outlined"
+                    label="Формула расчётка оценки"
+                    required
+                  ></v-text-field>
 
                   <v-btn variant="outlined" type="submit" class="mt-2"
                     >Сохранить</v-btn
