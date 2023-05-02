@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 import uvicorn
-from mongoengine import connect
 from envparse import Env
 from fastapi.middleware.cors import CORSMiddleware
+
+from motor.motor_asyncio import AsyncIOMotorClient
+from beanie import init_beanie
 
 from fastapi import Depends
 
 from hwhub import schemas
+from hwhub import models
 
 from hwhub.modules import auth, user, student_group, homework, submission
 
@@ -55,7 +58,10 @@ app.include_router(homework.router)
 app.include_router(submission.router)
 
 
-connect(host=MONGODB_URL)
+async def connecct_to_mondodb():
+    client = AsyncIOMotorClient(MONGODB_URL)
+    await init_beanie(database=client.get_default_database(), document_models=models.__db_models__)
+
 
 
 if __name__ == "__main__":
