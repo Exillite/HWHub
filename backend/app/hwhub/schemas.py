@@ -1,19 +1,21 @@
-from pydantic import BaseModel 
+from pydantic import BaseModel, EmailStr
 from typing import List
 from typing import Union
-import datetime
+from datetime import datetime
+from typing import Optional
+from beanie import PydanticObjectId
 
 
 class User(BaseModel):
-    id: str
+    id: PydanticObjectId
     login: str
     role: str
     name: str
     surname: str
     patronymic: str
-    email: str
-    vk_id: Union[str, None] = None
-    telegram_id: Union[str, None] = None
+    email: EmailStr
+    vk_id: Optional[str] = None
+    telegram_id: Optional[str] = None
     students_groups: list
     is_active: bool
 
@@ -22,8 +24,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     username: str
+
 
 class UserInDB(User):
     password: str
@@ -34,12 +38,14 @@ class UserCreate(BaseModel):
     name: str
     surname: str
     patronymic: str
-    email: str
+    email: EmailStr
     password: str
+
 
 class UserLogin(BaseModel):
     login: str
     password: str
+
 
 class UserUpdate(BaseModel):
     name: str
@@ -48,62 +54,68 @@ class UserUpdate(BaseModel):
 
 
 class StudentGroup(BaseModel):
-    pk: str
+    id: PydanticObjectId
     title: str
-    teacher_id: str
+    teacher_id: PydanticObjectId
     connect_code: str
     is_active: bool
 
+
 class StudentGroupCreate(BaseModel):
     title: str
-    teacher_id: str
+    teacher_id: PydanticObjectId
+
 
 class StudentGroupUpdate(BaseModel):
     title: str
 
 
 class Homework(BaseModel):
-    pk: str
+    id: str
     title: str
-    file: str
+    file: List[str]
     student_group: StudentGroup
-    uploaded_at: datetime.datetime
-    deadline: datetime.datetime
-    last_updated_at: datetime.datetime
+    uploaded_at: datetime
+    deadline: datetime
+    last_updated_at: datetime
     points: List[float]
     mark_formula: str
     is_active: bool
 
+
 class HomeworkCreate(BaseModel):
     title: str
-    file: str
-    student_group_id: str
-    deadline: datetime.datetime
+    file: List[str]
+    student_group_id: PydanticObjectId
+    deadline: datetime
     points: List[float]
     mark_formula: str
+
 
 class HomeworkUpdate(BaseModel):
     title: str
     file: str
-    deadline: datetime.datetime
+    deadline: datetime
     points: List[float]
     mark_formula: str
 
 
 class Submission(BaseModel):
-    pk: str
+    id: str
     student: User
     homework: Homework
     points: List[float]
     fine: float
     mark: float
-    start_submit: datetime.datetime
-    last_updated_at: datetime.datetime
+    start_submit: datetime
+    last_updated_at: datetime
     is_active: bool
-    
+
+
 class SubmissionCreate(BaseModel):
-    student_id: str
-    homework_id: str
+    student_id: PydanticObjectId
+    homework_id: PydanticObjectId
+
 
 class SubmissionUpdate(BaseModel):
     points: List[float]

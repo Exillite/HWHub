@@ -4,101 +4,106 @@ from .models import *
 from .validations import *
 from . import calculation
 
-import datetime
+from datetime import datetime
 
-def create_user(user: UserCreate):
-    # user.password = user.password.encode('utf-8')
-    new_user = UserModel(role="student", 
-                login=user.login,
-                name=user.name, 
-                surname=user.surname, 
-                patronymic=user.patronymic,
-                email=user.email,
-                password=user.password, 
-                is_active=True)
-    new_user.save()
-    
+
+async def create_user(user: UserCreate):
+    new_user = UserModel(
+        password=user.password,
+        login=user.login,
+        role="user",  # TODO change to correct role
+        name=user.name,
+        surname=user.surname,
+        patronymic=user.patronymic,
+        email=user.email,
+    )
+    await new_user.create()
+
     return new_user
 
-def get_user(user_id: str) -> UserModel:
-    user = UserModel.objects(pk=user_id).first()
-    if user:
-        return user
-    return None
 
-def edit_user(updt_user: UserUpdate, user_id: str) -> UserModel:
+async def get_user(user_id: PydanticObjectId) -> Optional[UserModel]:
+    user = await UserModel.get(user_id)
+    return user or None
+
+
+async def edit_user(updt_user: UserUpdate, user_id: PydanticObjectId) -> Optional[UserModel]:
     # edit user data
-    user = UserModel.objects(pk=user_id).first()
+    user = await UserModel.find_one(id == user_id)
     if user:
         user.name = updt_user.name
         user.surname = updt_user.surname
         user.patronymic = updt_user.patronymic
-        user.save()
+        await user.save()  # type: ignore
         return user
     return None
 
-def delete_user(user_id: str):
-    user = UserModel.objects(pk=user_id).first()
-    user.delete()
+
+async def delete_user(user_id: PydanticObjectId):
+    user = await UserModel.get(user_id)
+    await user.delete()  # type: ignore
 
 
-def create_student_group(stg: StudentGroupCreate) -> StudentGroupModel:
-    teacher = get_user(stg.teacher_id)
+async def create_student_group(stg: StudentGroupCreate) -> Optional[StudentGroupModel]:
+    teacher = await get_user(stg.teacher_id)
+    if not teacher:
+        return None
+
     student_group = StudentGroupModel(
-        title=stg.title,
-        teacher=teacher,
-    )
-    
-    student_group.save()
-    student_group.connect_code = student_group.pk
-    
+        title=stg.title, teacher=teacher)  # type: ignore WARNING
+
+    await student_group.create()
+    student_group.connect_code = str(student_group.id)
+    await student_group.save()  # type: ignore
+
     return student_group
 
-def get_student_group(stg_id: str) -> StudentGroupModel:
-    student_group = StudentGroupModel.objects(pk=stg_id).first()
-    if student_group:
-        return student_group
-    else:
-        return None
 
-def edit_student_group(stg: StudentGroupUpdate, stg_id:str) -> StudentGroupModel:
-    student_group = StudentGroupModel.objects(pk=stg_id).first()
+async def get_student_group(stg_id: PydanticObjectId) -> Optional[StudentGroupModel]:
+    student_group = await StudentGroupModel.get(stg_id)
+    return student_group or None
+
+
+async def edit_student_group(stg: StudentGroupUpdate, stg_id: PydanticObjectId) -> Optional[StudentGroupModel]:
+    student_group = await StudentGroupModel.get(stg_id)
     if student_group:
         student_group.title = stg.title
-        
-        student_group.save()
+        await student_group.save()  # type: ignore
         return student_group
     else:
         return None
-    
-def delete_student_group(stg_id: str):
-    student_group = StudentGroupModel.objects(pk=stg_id).first()
-    student_group.delete()
 
 
-def create_homework(hw: HomeworkCreate) -> HomeworkModel:
+async def delete_student_group(stg_id: PydanticObjectId):
+    student_group = await StudentGroupModel.get(stg_id)
+    await student_group.delete()  # type: ignore
+
+
+async def create_homework(hw: HomeworkCreate) -> HomeworkModel:
     student_group = get_student_group(hw.student_group_id)
-    
+
     homework = HomeworkModel(
         title=hw.title,
         file=hw.file,
-        student_group=student_group,
-        uploaded_at=datetime.datetime.now(),
+        student_group=student_group,  # type: ignore
+        uploaded_at=datetime.now(),
         deadline=hw.deadline,
-        last_updated_at=datetime.datetime.now(),
+        last_updated_at=datetime.now(),
         points=hw.points,
         mark_formula=hw.mark_formula
     )
-    homework.save()
-    
+    await homework.create()
+
     return homework
 
-def get_homework(hw_id: str) -> HomeworkModel:
-    homework = HomeworkModel.objects(pk=hw_id).first()
+
+async def get_homework(hw_id: PydanticObjectId) -> HomeworkModel:
+    homework = await HomeworkModel.get(hw_id)
     if homework:
         return homework
     else:
         return None
+
 
 def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
     homework = HomeworkModel.objects(pk=hw_id).first()
@@ -109,14 +114,15 @@ def edit_homework(hw: HomeworkUpdate, hw_id: str) -> HomeworkModel:
         homework.points = hw.points
         homework.mark_formula = hw.mark_formula
         homework.last_updated_at = datetime.datetime.now()
-                
+
         homework.save()
-        
+
         recalculate_homework_marks(homework)
-        
+
         return homework
     else:
         return None
+
 
 def delete_homework(hw_id: str):
     homework = HomeworkModel.objects(pk=hw_id).first()
@@ -126,9 +132,9 @@ def delete_homework(hw_id: str):
 def create_submission(sub: SubmissionCreate) -> SubmissionModel:
     student = get_user(sub.student_id)
     homework = get_homework(sub.homework_id)
-    
+
     points = [0.0] * len(homework.points)
-    
+
     submission = SubmissionModel(
         student=student,
         homework=homework,
@@ -136,10 +142,11 @@ def create_submission(sub: SubmissionCreate) -> SubmissionModel:
         start_submit=datetime.datetime.now(),
         last_updated_at=datetime.datetime.now()
     )
-    
+
     submission.save()
-    
+
     return submission
+
 
 def get_submission(sub_id: str) -> SubmissionModel:
     submission = SubmissionModel.objects(pk=sub_id).first()
@@ -147,19 +154,22 @@ def get_submission(sub_id: str) -> SubmissionModel:
         return submission
     else:
         return None
-    
+
+
 def edit_submission(sub: SubmissionUpdate, sub_id) -> SubmissionModel:
     submission = SubmissionModel.objects(pk=sub_id).first()
     if submission:
         submission.fine = sub.fine
         submission.points = sub.fine
         submission.last_updated_at = datetime.datetime.now()
-        submission.mark = calculation.calculate_mark(submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine)
-        
+        submission.mark = calculation.calculate_mark(
+            submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine)
+
         submission.save()
         return submission
     else:
         return None
+
 
 def delete_submission(sub_id: str) -> SubmissionModel:
     submission = SubmissionModel.objects(pk=sub_id).first()
@@ -177,8 +187,10 @@ def get_all_submission_by_homework(hw: HomeworkModel) -> list:
 def recalculate_homework_marks(hw: HomeworkModel):
     subs = get_all_submission_by_homework(hw)
     for sub in subs:
-        sub.mark = calculation.calculate_mark(hw.points, sub.points, hw.mark_formula, sub.fine)
+        sub.mark = calculation.calculate_mark(
+            hw.points, sub.points, hw.mark_formula, sub.fine)
         sub.save()
+
 
 def get_homeworks_by_students_group(std: StudentGroupModel) -> list:
     homeworks = HomeworkModel.objects(student_group=std)
@@ -209,6 +221,7 @@ def get_user_by_login(login: str) -> UserModel:
 
 def get_students_from_students_group(std: StudentGroupModel):
     return UserModel.objects(students_groups=std, role="student")
+
 
 def get_consultants_from_students_group(std: StudentGroupModel):
     return UserModel.objects(students_groups=std, role="consultant")

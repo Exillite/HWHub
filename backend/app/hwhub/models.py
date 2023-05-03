@@ -1,10 +1,10 @@
 from beanie import Document, PydanticObjectId, Link
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
 from typing import Optional, List
 from datetime import datetime
 
 
-class UserModel(BaseModel):
+class UserModel(Document):
     password: str
     login: str
     role: str
@@ -12,22 +12,22 @@ class UserModel(BaseModel):
     surname: str
     patronymic: str
     email: EmailStr
-    vk_id: Optional[int] = None
-    telegram_id: Optional[int] = None
+    vk_id: Optional[str] = None
+    telegram_id: Optional[str] = None
     students_groups: List["StudentGroupModel"] = []
     is_active: bool = True
 
 
-class StudentGroupModel(BaseModel):
+class StudentGroupModel(Document):
     title: str
     teacher: Link[UserModel]
-    connect_code: str
+    connect_code: Optional[str] = None
     is_active: bool = True
 
 
-class HomeworkModel(BaseModel):
+class HomeworkModel(Document):
     title: str
-    file: str
+    file: List[str]
     student_group: Link[StudentGroupModel]
     uploaded_at: datetime
     deadline: datetime
@@ -37,7 +37,7 @@ class HomeworkModel(BaseModel):
     is_active: bool = True
 
 
-class SubmissionModel(BaseModel):
+class SubmissionModel(Document):
     student: Link[UserModel]
     homework: Link[HomeworkModel]
     points: List[float]

@@ -15,7 +15,8 @@ from hwhub.modules import auth, user, student_group, homework, submission
 
 
 env = Env()
-MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/test_database")
+MONGODB_URL = env.str(
+    "MONGODB_URL", default="mongodb://localhost:27017/test_database")
 
 
 app = FastAPI(
@@ -27,7 +28,7 @@ app = FastAPI(
         "email": "alexander@rodionov.space"
     },
     openapi_url="/api/v0.1/openapi.json",
-    redoc_url= None,
+    redoc_url=None,
 )
 
 app.add_middleware(
@@ -62,6 +63,10 @@ async def connecct_to_mondodb():
     client = AsyncIOMotorClient(MONGODB_URL)
     await init_beanie(database=client.get_default_database(), document_models=models.__db_models__)
 
+
+@app.on_event("startup")
+async def startup_event():
+    await connecct_to_mondodb()
 
 
 if __name__ == "__main__":
