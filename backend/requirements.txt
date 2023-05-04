@@ -14,4 +14,3 @@ ecdsa==0.18.0
 pyasn1==0.4.8
 passlib==1.7.4
 python-multipart==0.0.6
-beanie==1.18.0
