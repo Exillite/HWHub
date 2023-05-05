@@ -3,11 +3,10 @@ from typing import List
 from typing import Union
 from datetime import datetime
 from typing import Optional
-from beanie import PydanticObjectId
 
 
 class User(BaseModel):
-    id: PydanticObjectId
+    id: str
     login: str
     role: str
     name: str
@@ -54,16 +53,16 @@ class UserUpdate(BaseModel):
 
 
 class StudentGroup(BaseModel):
-    id: PydanticObjectId
+    id: str
     title: str
-    teacher_id: PydanticObjectId
+    teacher_id: str
     connect_code: str
     is_active: bool
 
 
 class StudentGroupCreate(BaseModel):
     title: str
-    teacher_id: PydanticObjectId
+    teacher_id: str
 
 
 class StudentGroupUpdate(BaseModel):
@@ -73,7 +72,7 @@ class StudentGroupUpdate(BaseModel):
 class Homework(BaseModel):
     id: str
     title: str
-    file: List[str]
+    files: List[str]
     student_group: StudentGroup
     uploaded_at: datetime
     deadline: datetime
@@ -85,8 +84,8 @@ class Homework(BaseModel):
 
 class HomeworkCreate(BaseModel):
     title: str
-    file: List[str]
-    student_group_id: PydanticObjectId
+    files: List[str]
+    student_group_id: str
     deadline: datetime
     points: List[float]
     mark_formula: str
@@ -94,7 +93,7 @@ class HomeworkCreate(BaseModel):
 
 class HomeworkUpdate(BaseModel):
     title: str
-    file: str
+    files: List[str]
     deadline: datetime
     points: List[float]
     mark_formula: str
@@ -113,8 +112,8 @@ class Submission(BaseModel):
 
 
 class SubmissionCreate(BaseModel):
-    student_id: PydanticObjectId
-    homework_id: PydanticObjectId
+    student_id: str
+    homework_id: str
 
 
 class SubmissionUpdate(BaseModel):

@@ -7,7 +7,7 @@ from db import db
 
 
 class UserModel(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
 
     password: str
     login: str
@@ -103,7 +103,7 @@ class UserModel(BaseModel):
 
 
 class StudentGroupModel(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
 
     title: str
     teacher: UserModel
@@ -170,7 +170,7 @@ class StudentGroupModel(BaseModel):
 
 
 class HomeworkModel(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
 
     title: str
     files: List[str]
@@ -248,13 +248,13 @@ class HomeworkModel(BaseModel):
 
 
 class SubmissionModel(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
 
     student: UserModel
     homework: HomeworkModel
     points: List[float]
-    fine: float
-    mark: float
+    fine: float = 0
+    mark: float = 0
     start_submit: datetime
     last_updated_at: datetime
     is_active: bool = True
