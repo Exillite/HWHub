@@ -32,7 +32,7 @@ async def check_permision(user: schemas.User, student_group_id: Optional[str] = 
             return False
 
         for u_stg in user.students_groups:
-            if stg.id == u_stg.pk:
+            if stg.id == u_stg.id:
                 return True
         return stg.teacher.id == user.id
     if perm == "e" and student_group_id:
