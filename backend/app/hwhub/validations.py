@@ -50,9 +50,10 @@ def validation_create_user(user: UserCreate):
         return False, 202
     if not password_validation(user.password):
         return False, 203
-    if UserModel.find_one(UserModel.email == user.email):
+    # WARNING: can be problem with asinc
+    if UserModel.get(email=user.email):
         return False, 202
-    if UserModel.find_one(UserModel.login == user.login):
+    if UserModel.get(login=user.login):
         return False, 204
 
     return True, 200
