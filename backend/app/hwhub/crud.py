@@ -118,7 +118,7 @@ async def edit_homework(hw: HomeworkUpdate, hw_id: str) -> Optional[HomeworkMode
 
         await homework.update()
 
-        recalculate_homework_marks(homework)
+        await recalculate_homework_marks(homework)
 
         return homework
     else:
@@ -182,63 +182,65 @@ async def delete_submission(sub_id: str):
 # ------------------------ ADDITIONAL METHODS ------------------------
 
 
-def get_all_submission_by_homework(hw: HomeworkModel) -> list:
-    subs = SubmissionModel.objects(homework=hw)
-    return list(subs)
+async def get_all_submission_by_homework(hw: HomeworkModel) -> List[SubmissionModel]:
+    subs = await SubmissionModel.find(homework=hw.id)
+    return subs
 
 
-def recalculate_homework_marks(hw: HomeworkModel):
-    subs = get_all_submission_by_homework(hw)
+async def recalculate_homework_marks(hw: HomeworkModel):
+    subs = await get_all_submission_by_homework(hw)
     for sub in subs:
         sub.mark = calculation.calculate_mark(
             hw.points, sub.points, hw.mark_formula, sub.fine)
-        sub.save()
+        await sub.update()
 
 
-def get_homeworks_by_students_group(std: StudentGroupModel) -> list:
-    homeworks = HomeworkModel.objects(student_group=std)
-    return list(homeworks)
+async def get_homeworks_by_students_group(std: StudentGroupModel) -> List[HomeworkModel]:
+    homeworks = await HomeworkModel.find(student_group=std.id)
+    return homeworks
 
 
-def get_submissions_by_homework(hw: HomeworkModel) -> list:
-    subs = SubmissionModel.objects(homework=hw)
-    return list(subs)
+async def get_submissions_by_homework(hw: HomeworkModel) -> List[SubmissionModel]:
+    subs = await SubmissionModel.find(homework=hw.id)
+    return subs
 
 
-def get_submission_by_homework_and_student(hw: HomeworkModel, user: UserModel) -> SubmissionModel:
-    sub = SubmissionModel.objects(homework=hw, student=user).first()
+async def get_submission_by_homework_and_student(hw: HomeworkModel, user: UserModel) -> Optional[SubmissionModel]:
+    sub = await SubmissionModel.get(homework=hw, student=user)
     return sub
 
 
-def get_submissions_by_student(user: UserModel) -> list:
-    subs = SubmissionModel.objects(student=user)
-    return list(subs)
+async def get_submissions_by_student(user: UserModel) -> List[SubmissionModel]:
+    subs = await SubmissionModel.find(student=user.id)
+    return subs
 
 
-def get_user_by_login(login: str) -> UserModel:
-    user = UserModel.objects(login=login).first()
-    if user:
-        return user
-    return None
+async def get_user_by_login(login: str) -> Optional[UserModel]:
+    user = await UserModel.get(login=login)
+    return user
 
 
-def get_students_from_students_group(std: StudentGroupModel):
-    return UserModel.objects(students_groups=std, role="student")
+async def get_students_from_students_group(std: StudentGroupModel) -> List[UserModel]:
+    return await UserModel.find(students_groups=std.id, role="student")
 
 
-def get_consultants_from_students_group(std: StudentGroupModel):
-    return UserModel.objects(students_groups=std, role="consultant")
+async def get_consultants_from_students_group(std: StudentGroupModel) -> List[UserModel]:
+    return await UserModel.find(students_groups=std.id, role="consultant")
 
 
-def get_students_group_by_teacher(teacher_id):
-    user = UserModel.objects(pk=teacher_id).first()
-    stgs = StudentGroupModel.objects(teacher=user)
-    return list(stgs)
+async def get_students_group_by_teacher(teacher_id) -> List[StudentGroupModel]:
+    user = await UserModel.get(id=teacher_id)
+    if not user:
+        return []
+    student_groups = await StudentGroupModel.find(teacher=user.id)
+    return student_groups
 
 
-def remove_user_from_student_group(student_group_id: str, user_id: str):
-    student_group = StudentGroupModel.objects.get(id=student_group_id)
-    user = UserModel.objects.get(id=user_id)
+async def remove_user_from_student_group(student_group_id: str, user_id: str):
+    student_group = await StudentGroupModel.get(id=student_group_id)
+    user = await UserModel.get(id=user_id)
+    if not student_group or not user:
+        return
     if student_group in user.students_groups:
         user.students_groups.remove(student_group)
-        user.save()
+        await user.update()
