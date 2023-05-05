@@ -32,11 +32,11 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(login: str):
-    usr_mdl = crud.get_user_by_login(login)
-    if usr_mdl:
-        return schemas.UserInDB(id=str(usr_mdl.pk), 
-                                login=usr_mdl.login, 
+async def get_user(login: str):
+    usr_mdl = await crud.get_user_by_login(login)
+    if usr_mdl and usr_mdl.id:
+        return schemas.UserInDB(id=usr_mdl.id,
+                                login=usr_mdl.login,
                                 password=usr_mdl.password,
                                 role=usr_mdl.role,
                                 name=usr_mdl.name,
@@ -48,8 +48,9 @@ def get_user(login: str):
                                 students_groups=usr_mdl.students_groups if usr_mdl.students_groups else [],
                                 is_active=usr_mdl.is_active)
 
-def authenticate_user(login: str, password: str):
-    user = get_user(login)
+
+async def authenticate_user(login: str, password: str):
+    user = await get_user(login)
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -76,7 +77,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
+        username = payload.get("sub")
         if username is None:
             raise credentials_exception
         token_data = schemas.TokenData(username=username)
@@ -91,8 +92,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def get_current_active_user(
     current_user: schemas.User = Depends(get_current_user)
 ):
-    user = schemas.User(id=str(current_user.id), 
-                        login=current_user.login, 
+    user = schemas.User(id=current_user.id,
+                        login=current_user.login,
                         role=current_user.role,
                         name=current_user.name,
                         surname=current_user.surname,
@@ -109,7 +110,7 @@ async def get_current_active_user(
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends()
 ):
-    user = authenticate_user(form_data.username, form_data.password)
+    user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
