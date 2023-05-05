@@ -11,6 +11,7 @@ router = APIRouter(
     tags=["User"],
 )
 
+
 @router.post("/")
 async def registaration_new_user(user: schemas.UserCreate):
     try:
@@ -20,8 +21,8 @@ async def registaration_new_user(user: schemas.UserCreate):
 
         pwd = str(user.password)
         user.password = auth.get_password_hash(pwd)
-        new_user = crud.create_user(user)
-        return {"status": status_code, "user_id": str(new_user.pk)}
+        new_user = await crud.create_user(user)
+        return {"status": status_code, "user_id": str(new_user.id)}
     except Exception as e:
         return {"status": 500, "error": str(e)}
 
@@ -30,32 +31,32 @@ async def registaration_new_user(user: schemas.UserCreate):
 async def get_user(user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     """
         500 - server error
-        
+
         200 - OK
-        
+
         201 - user does not exist
     """
     try:
-        user = crud.get_user(user_id)
+        user = await crud.get_user(user_id)
         if not user:
             return {"status": 201}
         return {"status": 200, "user": user.to_json()}
     except Exception as e:
         return {"status": 500, "error": str(e)}
-    
+
 
 @router.put("/{user_id}")
 async def edit_user(user_id: str, edit_user: schemas.UserUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
     """
     400 - отказано в доступе
     """
-    if not (user_id == current_user.pk or current_user.role == 'admin'):
+    if not (user_id == current_user.id or current_user.role == 'admin'):
         return {"status": 400}
     try:
-        user = crud.edit_user(edit_user, user_id)
+        user = await crud.edit_user(edit_user, user_id)
         if not user:
-            return {"status": 201} # хз ошибка значит какая то
-        return {"status": 200, "user_id": str(user.pk)}
+            return {"status": 201}  # хз, ошибка значит какая то
+        return {"status": 200, "user_id": str(user.id)}
     except Exception as e:
         return {"status": 500, "error": str(e)}
 
@@ -65,10 +66,10 @@ async def delete_user(user_id: str, current_user: schemas.User = Depends(auth.ge
     """
     400 - отказано в доступе
     """
-    if not (user_id == current_user.pk or current_user.role == 'admin'):
+    if not (user_id == current_user.id or current_user.role == 'admin'):
         return {"status": 400}
     try:
-        crud.delete_user(user_id)
+        await crud.delete_user(user_id)
         return {"status": 200}
     except Exception as e:
         return {"status": 500, "error": str(e)}
@@ -77,9 +78,12 @@ async def delete_user(user_id: str, current_user: schemas.User = Depends(auth.ge
 @router.get("/{user_id}/student_groups")
 async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     try:
-        user = crud.get_user(user_id)
-        students_groups_where_teacher = crud.get_students_group_by_teacher(user_id)
-        students_groups = [g.to_json() for g in user.students_groups] + [g.to_json() for g in students_groups_where_teacher]
+        user = await crud.get_user(user_id)
+        if not user:
+            return {"status": 201}
+        students_groups_where_teacher = await crud.get_students_group_by_teacher(user_id)
+        students_groups = [g.to_json() for g in user.students_groups] + \
+            [g.to_json() for g in students_groups_where_teacher]
         return {"status": 200, "student_groups": students_groups}
     except Exception as e:
         return {"status": 500, "error": str(e)}
