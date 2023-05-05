@@ -53,7 +53,7 @@ async def check_permision(user: schemas.User, homework_id: Optional[str] = None,
 
 @router.post("/")
 async def create_new_homework(new_hw: schemas.HomeworkCreate, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, student_group_id=new_hw.student_group_id):
+    if not await check_permision(current_user, student_group_id=new_hw.student_group_id):
         return {"status": 400}
     try:
         hw = await crud.create_homework(new_hw)
@@ -66,7 +66,7 @@ async def create_new_homework(new_hw: schemas.HomeworkCreate, current_user: sche
 
 @router.get("/{homework_id}")
 async def get_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, homework_id=homework_id, perm="r"):
+    if not await check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
         hw = await crud.get_homework(homework_id)
@@ -79,7 +79,7 @@ async def get_homework(homework_id: str, current_user: schemas.User = Depends(au
 
 @router.put("/{homework_id}")
 async def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, homework_id=homework_id, perm="e"):
+    if not await check_permision(current_user, homework_id=homework_id, perm="e"):
         return {"status": 400}
     try:
         hw = await crud.edit_homework(edit_hw, homework_id)
@@ -92,7 +92,7 @@ async def edit_homework(homework_id: str, edit_hw: schemas.HomeworkUpdate, curre
 
 @router.delete("/{homework_id}")
 async def delete_homework(homework_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, homework_id=homework_id, perm="e"):
+    if not await check_permision(current_user, homework_id=homework_id, perm="e"):
         return {"status": 400}
     try:
         await crud.delete_homework(homework_id)
@@ -103,7 +103,7 @@ async def delete_homework(homework_id: str, current_user: schemas.User = Depends
 
 @router.get("/{homework_id}/submissions")
 async def get_homework_results(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, homework_id=homework_id, perm="r"):
+    if not await check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
         hw = await crud.get_homework(homework_id)
@@ -117,7 +117,7 @@ async def get_homework_results(homework_id, current_user: schemas.User = Depends
 
 @router.get("/{homework_id}/marks")
 async def get_homework_marks(homework_id, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not check_permision(current_user, homework_id=homework_id, perm="r"):
+    if not await check_permision(current_user, homework_id=homework_id, perm="r"):
         return {"status": 400}
     try:
         hw = await crud.get_homework(homework_id)
