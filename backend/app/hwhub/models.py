@@ -81,14 +81,14 @@ class UserModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.db[cls.get_collection_name()].find(kwargs)
+        cursor = db.db[cls.get_collection_name()].find(kwargs)
         users = []
-        for document in documents:
+        async for document in cursor:
             users.append(await cls.document_to_object(document))
         return users
 
     async def create(self):
-        new_document = self.to_json()
+        new_document = self.to_json(with_ids=True)
         new_document['password'] = self.password
         result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
@@ -151,14 +151,14 @@ class StudentGroupModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.db[cls.get_collection_name()].find(kwargs)
+        cursor = db.db[cls.get_collection_name()].find(kwargs)
         student_groups = []
-        for document in documents:
+        async for document in cursor:
             student_groups.append(await cls.document_to_object(document))
         return student_groups
 
     async def create(self):
-        new_document = self.to_json()
+        new_document = self.to_json(with_ids=True)
         result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
@@ -231,14 +231,14 @@ class HomeworkModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.db[cls.get_collection_name()].find(kwargs)
+        cursor = db.db[cls.get_collection_name()].find(kwargs)
         homeworks = []
-        for document in documents:
+        async for document in cursor:
             homeworks.append(await cls.document_to_object(document))
         return homeworks
 
     async def create(self):
-        new_document = self.to_json()
+        new_document = self.to_json(with_ids=True)
         result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
@@ -309,14 +309,14 @@ class SubmissionModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.db[cls.get_collection_name()].find(kwargs)
+        cursor = db.db[cls.get_collection_name()].find(kwargs)
         submissions = []
-        for document in documents:
+        async for document in cursor:
             submissions.append(await cls.document_to_object(document))
         return submissions
 
     async def create(self):
-        new_document = self.to_json()
+        new_document = self.to_json(with_ids=True)
         result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
