@@ -47,6 +47,7 @@
 
 <script>
     import api from '@/api.js'
+    import control from '@/control'
 
     export default {
         data() {
@@ -65,7 +66,7 @@
                     console.log(response);
                     if (response.status == 200) {
                         let token = response.data.access_token;
-                        localStorage.setItem('token', token)
+                        control.save_authorization(token)
                         this.$router.push({name: 'Main'});
                     } else {
                         this.error_msg = 'Не верный логин или пароль.'

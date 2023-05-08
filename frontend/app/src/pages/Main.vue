@@ -17,7 +17,7 @@
         mounted() {
 
             if (control.check_auth()){
-                this.$router.push({name: 'Shops'});
+                this.$router.push({name: 'Groups'});
             } else {
                 this.$router.push({name: 'Login'});
             }

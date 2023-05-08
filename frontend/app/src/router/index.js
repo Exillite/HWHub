@@ -2,14 +2,6 @@ import Main from '@/pages/Main.vue'
 import { createWebHistory, createRouter } from 'vue-router'
 import cookie from '@/cookie'
 
-
-function check_is_login() {
-    if (cookie.getCookie('user_id') === undefined) {
-        return true;
-    }
-    return true;
-}
-
 const routes = [{
         path: '/',
         name: 'Main',

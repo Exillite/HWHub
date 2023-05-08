@@ -5,9 +5,7 @@
         >ЛОГО</v-toolbar-title
       >
       <v-spacer></v-spacer>
-      <v-btn @click="$router.push({ name: 'Registration' })" text
-        >Зарегистрироваться</v-btn
-      >
+
     </v-app-bar>
     <v-main>
       <v-container>
