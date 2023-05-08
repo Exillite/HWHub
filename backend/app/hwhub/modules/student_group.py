@@ -200,8 +200,6 @@ async def get_marks(student_group_id: str, current_user: schemas.User = Depends(
 
 @router.patch("/{student_group_id}/add_user/{user_id}")
 async def add_user_to_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
-    if not await check_permision(current_user, student_group_id, perm="e"):
-        return {"status": 400}
     try:
         await crud.add_user_to_student_group(student_group_id, user_id)
         return {"status": 200}
