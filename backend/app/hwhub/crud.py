@@ -162,7 +162,10 @@ async def edit_submission(sub: SubmissionUpdate, sub_id) -> Optional[SubmissionM
     submission = await SubmissionModel.get(id=sub_id)
     if submission:
         submission.fine = sub.fine
-        submission.points = sub.points
+        if len(submission.points) != len(submission.homework.points):
+            submission.points = [0.0] * len(submission.homework.points)
+        else:
+            submission.points = sub.points
         submission.last_updated_at = datetime.now()
         submission.mark = calculation.calculate_mark(
             submission.homework.points, sub.points, submission.homework.mark_formula, sub.fine)
@@ -251,6 +254,6 @@ async def add_user_to_student_group(student_group_id: str, user_id: str):
     user = await UserModel.get(id=user_id)
     if not student_group or not user:
         return
-    if student_group not in user.students_groups and student_group.teacher.id == user.id:
+    if student_group not in user.students_groups and student_group.teacher.id != user.id:
         user.students_groups.append(student_group)
         await user.update()
