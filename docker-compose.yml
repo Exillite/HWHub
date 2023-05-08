@@ -28,13 +28,13 @@ services:
       - mongo_db
 
   mongo_db:
-      image: mongo
-      ports:
-        - "27017:27017"
-      networks:
-        - custom
-      volumes:
-        - db_data:/data/dbs
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - custom
+    volumes:
+      - db_data:/data/dbs
 
   vue:
     build:
