@@ -15,4 +15,4 @@ def calculate_mark(hw_points, sub_points, formula, fine) -> float:
     
     mark = calc + fine
     mark = round(mark, 2)
-    return mark
+    return float(mark)
