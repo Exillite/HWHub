@@ -26,7 +26,7 @@ def password_validation(password: str) -> bool:
     return len(password) >= 8
 
 
-def validation_create_user(user: UserCreate):
+async def validation_create_user(user: UserCreate):
     """
     Parameters:
         user (UserCreate): A UserCreate object representing the user information to be validated.
@@ -51,9 +51,11 @@ def validation_create_user(user: UserCreate):
     if not password_validation(user.password):
         return False, 203
     # WARNING: can be problem with asinc
-    if UserModel.get(email=user.email):
+    usr = await UserModel.get(email=user.email)
+    if usr:
         return False, 202
-    if UserModel.get(login=user.login):
+    usr1 = await UserModel.get(login=user.login)
+    if usr1:
         return False, 204
 
     return True, 200

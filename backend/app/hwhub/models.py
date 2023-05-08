@@ -21,7 +21,9 @@ class UserModel(BaseModel):
     students_groups: List['StudentGroupModel'] = []
     is_active: bool = True
 
-    collection_name = 'user'
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "user"
 
     def to_json(self, with_ids=False):
         data = {
@@ -55,12 +57,12 @@ class UserModel(BaseModel):
         return data
 
     @classmethod
-    def document_to_object(cls, document) -> 'UserModel':
+    async def document_to_object(cls, document) -> 'UserModel':
         document['id'] = str(document['_id'])
         document.pop('_id')
         student_groups = []
         for group in document['students_groups']:
-            student_groups.append(StudentGroupModel.get(id=group))
+            student_groups.append(await StudentGroupModel.get(id=group))
         document['students_groups'] = student_groups
         return cls(**document)
 
@@ -69,9 +71,9 @@ class UserModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        document = await db.client[cls.collection_name].find_one(kwargs)
+        document = await db.db[cls.get_collection_name()].find_one(kwargs)
         if document:
-            return cls.document_to_object(document)
+            return await cls.document_to_object(document)
         return None
 
     @classmethod
@@ -79,26 +81,26 @@ class UserModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.client[cls.collection_name].find(kwargs)
+        documents = await db.db[cls.get_collection_name()].find(kwargs)
         users = []
         for document in documents:
-            users.append(cls.document_to_object(document))
+            users.append(await cls.document_to_object(document))
         return users
 
     async def create(self):
         new_document = self.to_json()
         new_document['password'] = self.password
-        result = await db.client[self.collection_name].insert_one(new_document)
+        result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
     async def update(self):
         document = self.to_json(with_ids=True)
         document.pop('id')
-        await db.client[self.collection_name].update_one(
+        await db.db[self.get_collection_name()].update_one(
             {'_id': ObjectId(self.id)}, {'$set': document})
 
     async def delete(self):
-        await db.client[self.collection_name].delete_one(
+        await db.db[self.get_collection_name()].delete_one(
             {'_id': ObjectId(self.id)})
 
 
@@ -110,7 +112,9 @@ class StudentGroupModel(BaseModel):
     connect_code: Optional[str] = None
     is_active: bool = True
 
-    collection_name = 'student_group'
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "student_group"
 
     def to_json(self, with_ids=False) -> dict:
         data = {
@@ -126,10 +130,10 @@ class StudentGroupModel(BaseModel):
         return data
 
     @classmethod
-    def document_to_object(cls, document) -> 'StudentGroupModel':
+    async def document_to_object(cls, document) -> 'StudentGroupModel':
         document['id'] = str(document['_id'])
         document.pop('_id')
-        document['teacher'] = UserModel.get(id=document['teacher'])
+        document['teacher'] = await UserModel.get(id=document['teacher'])
         return cls(**document)
 
     @classmethod
@@ -137,9 +141,9 @@ class StudentGroupModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        document = await db.client[cls.collection_name].find_one(kwargs)
+        document = await db.db[cls.get_collection_name()].find_one(kwargs)
         if document:
-            return cls.document_to_object(document)
+            return await cls.document_to_object(document)
         return None
 
     @classmethod
@@ -147,25 +151,25 @@ class StudentGroupModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.client[cls.collection_name].find(kwargs)
+        documents = await db.db[cls.get_collection_name()].find(kwargs)
         student_groups = []
         for document in documents:
-            student_groups.append(cls.document_to_object(document))
+            student_groups.append(await cls.document_to_object(document))
         return student_groups
 
     async def create(self):
         new_document = self.to_json()
-        result = await db.client[self.collection_name].insert_one(new_document)
+        result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
     async def update(self):
         document = self.to_json(with_ids=True)
         document.pop('id')
-        await db.client[self.collection_name].update_one(
+        await db.db[self.get_collection_name()].update_one(
             {'_id': ObjectId(self.id)}, {'$set': document})
 
     async def delete(self):
-        await db.client[self.collection_name].delete_one(
+        await db.db[self.get_collection_name()].delete_one(
             {'_id': ObjectId(self.id)})
 
 
@@ -182,7 +186,9 @@ class HomeworkModel(BaseModel):
     mark_formula: str
     is_active: bool = True
 
-    collection_name = 'homework'
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "homework"
 
     def to_json(self, with_ids=False) -> dict:
         data = {
@@ -203,10 +209,10 @@ class HomeworkModel(BaseModel):
         return data
 
     @classmethod
-    def document_to_object(cls, document) -> 'HomeworkModel':
+    async def document_to_object(cls, document) -> 'HomeworkModel':
         document['id'] = str(document['_id'])
         document.pop('_id')
-        document['student_group'] = StudentGroupModel.get(
+        document['student_group'] = await StudentGroupModel.get(
             id=document['student_group'])
         return cls(**document)
 
@@ -215,9 +221,9 @@ class HomeworkModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        document = await db.client[cls.collection_name].find_one(kwargs)
+        document = await db.db[cls.get_collection_name()].find_one(kwargs)
         if document:
-            return cls.document_to_object(document)
+            return await cls.document_to_object(document)
         return None
 
     @classmethod
@@ -225,25 +231,25 @@ class HomeworkModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.client[cls.collection_name].find(kwargs)
+        documents = await db.db[cls.get_collection_name()].find(kwargs)
         homeworks = []
         for document in documents:
-            homeworks.append(cls.document_to_object(document))
+            homeworks.append(await cls.document_to_object(document))
         return homeworks
 
     async def create(self):
         new_document = self.to_json()
-        result = await db.client[self.collection_name].insert_one(new_document)
+        result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
     async def update(self):
         document = self.to_json(with_ids=True)
         document.pop('id')
-        await db.client[self.collection_name].update_one(
+        await db.db[self.get_collection_name()].update_one(
             {'_id': ObjectId(self.id)}, {'$set': document})
 
     async def delete(self):
-        await db.client[self.collection_name].delete_one(
+        await db.db[self.get_collection_name()].delete_one(
             {'_id': ObjectId(self.id)})
 
 
@@ -259,7 +265,9 @@ class SubmissionModel(BaseModel):
     last_updated_at: datetime
     is_active: bool = True
 
-    collection_name = 'homework'
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "submission"
 
     def to_json(self, with_ids=False) -> dict:
         data = {
@@ -279,11 +287,11 @@ class SubmissionModel(BaseModel):
         return data
 
     @classmethod
-    def document_to_object(cls, document) -> 'SubmissionModel':
+    async def document_to_object(cls, document) -> 'SubmissionModel':
         document['id'] = str(document['_id'])
         document.pop('_id')
-        document['student'] = UserModel.get(id=document['student'])
-        document['homework'] = HomeworkModel.get(id=document['homework'])
+        document['student'] = await UserModel.get(id=document['student'])
+        document['homework'] = await HomeworkModel.get(id=document['homework'])
         return cls(**document)
 
     @classmethod
@@ -291,9 +299,9 @@ class SubmissionModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        document = await db.client[cls.collection_name].find_one(kwargs)
+        document = await db.db[cls.get_collection_name()].find_one(kwargs)
         if document:
-            return cls.document_to_object(document)
+            return await cls.document_to_object(document)
         return None
 
     @classmethod
@@ -301,23 +309,29 @@ class SubmissionModel(BaseModel):
         if 'id' in kwargs:
             kwargs['_id'] = ObjectId(kwargs['id'])
             kwargs.pop('id')
-        documents = await db.client[cls.collection_name].find(kwargs)
+        documents = await db.db[cls.get_collection_name()].find(kwargs)
         submissions = []
         for document in documents:
-            submissions.append(cls.document_to_object(document))
+            submissions.append(await cls.document_to_object(document))
         return submissions
 
     async def create(self):
         new_document = self.to_json()
-        result = await db.client[self.collection_name].insert_one(new_document)
+        result = await db.db[self.get_collection_name()].insert_one(new_document)
         self.id = str(result.inserted_id)
 
     async def update(self):
         document = self.to_json(with_ids=True)
         document.pop('id')
-        await db.client[self.collection_name].update_one(
+        await db.db[self.get_collection_name()].update_one(
             {'_id': ObjectId(self.id)}, {'$set': document})
 
     async def delete(self):
-        await db.client[self.collection_name].delete_one(
+        await db.db[self.get_collection_name()].delete_one(
             {'_id': ObjectId(self.id)})
+
+
+UserModel.update_forward_refs()
+StudentGroupModel.update_forward_refs()
+HomeworkModel.update_forward_refs()
+SubmissionModel.update_forward_refs()

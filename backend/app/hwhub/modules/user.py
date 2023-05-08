@@ -15,7 +15,7 @@ router = APIRouter(
 @router.post("/")
 async def registaration_new_user(user: schemas.UserCreate):
     try:
-        is_valid, status_code = validations.validation_create_user(user)
+        is_valid, status_code = await validations.validation_create_user(user)
         if not is_valid:
             return {"status": status_code}
 
@@ -24,6 +24,7 @@ async def registaration_new_user(user: schemas.UserCreate):
         new_user = await crud.create_user(user)
         return {"status": status_code, "user_id": str(new_user.id)}
     except Exception as e:
+        print(e)
         return {"status": 500, "error": str(e)}
 
 

@@ -64,13 +64,13 @@ async def create_new_student_group(new_stg: schemas.StudentGroupCreate, current_
 async def get_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not await check_permision(current_user, student_group_id, perm="r"):
         return {"status": 400}
-    try:
-        stg = await crud.get_student_group(student_group_id)
-        if not stg:
-            return {"status": 201}
-        return {"status": 200, "student_group": stg.to_json()}
-    except Exception as e:
-        return {"status": 500, "error": str(e)}
+    # try:
+    stg = await crud.get_student_group(student_group_id)
+    if not stg:
+        return {"status": 201}
+    return {"status": 200, "student_group": stg.to_json()}
+    # except Exception as e:
+    #     return {"status": 500, "error": str(e)}
 
 
 @router.put("/{student_group_id}")
