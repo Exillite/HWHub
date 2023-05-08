@@ -144,7 +144,11 @@ export default {
     },
 
     async kick_user_from_students_group(student_group_id, user_id) {
-        return axios.post(`/student_group/${student_group_id}/kick/${user_id}`);
+        return axios.patch(`/student_group/${student_group_id}/kick_user/${user_id}`);
+    },
+
+    async add_user_to_students_group(student_group_id, user_id) {
+        return axios.patch(`/student_group/${student_group_id}/add_user/${user_id}`);
     },
 
     async get_student_group_results(student_group_id) {

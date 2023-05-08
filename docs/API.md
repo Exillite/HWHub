@@ -571,7 +571,23 @@ Example:
   - 500 - Server error
 
 ### Kick User from Student Group
-- URL: `/api/v0.1/student_group/{student_group_id}/kick/{user_id}`
+- URL: `/api/v0.1/student_group/{student_group_id}/kick_user/{user_id}`
+- method: **PATCH**
+- auth required: **YES**
+- description: 
+- response body:
+```json
+{
+    "status": int,
+}
+```
+- status codes:
+  - 200 - OK
+  - 400 - Auth fail or permission denied
+  - 500 - Server error
+
+### Add User to Student Group
+- URL: `/api/v0.1/student_group/{student_group_id}/add_user/{user_id}`
 - method: **PATCH**
 - auth required: **YES**
 - description: 

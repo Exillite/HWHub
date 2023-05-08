@@ -244,3 +244,13 @@ async def remove_user_from_student_group(student_group_id: str, user_id: str):
     if student_group in user.students_groups:
         user.students_groups.remove(student_group)
         await user.update()
+
+
+async def add_user_to_student_group(student_group_id: str, user_id: str):
+    student_group = await StudentGroupModel.get(id=student_group_id)
+    user = await UserModel.get(id=user_id)
+    if not student_group or not user:
+        return
+    if student_group not in user.students_groups and student_group.teacher.id == user.id:
+        user.students_groups.append(student_group)
+        await user.update()

@@ -139,7 +139,7 @@ async def get_student_groups_consultants(student_group_id: str, current_user: sc
         return {"status": 500, "error": str(e)}
 
 
-@router.patch("/{student_group_id}/kick/{user_id}")
+@router.patch("/{student_group_id}/kick_user/{user_id}")
 async def kick_user_from_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     if not await check_permision(current_user, student_group_id, perm="e"):
         return {"status": 400}
@@ -194,5 +194,16 @@ async def get_marks(student_group_id: str, current_user: schemas.User = Depends(
                     resp['items'][-1][hw.id] = submission.mark
 
         return {"status": 200, "marks": resp}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
+@router.patch("/{student_group_id}/add_user/{user_id}")
+async def add_user_to_students_group(student_group_id: str, user_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    if not await check_permision(current_user, student_group_id, perm="e"):
+        return {"status": 400}
+    try:
+        await crud.add_user_to_student_group(student_group_id, user_id)
+        return {"status": 200}
     except Exception as e:
         return {"status": 500, "error": str(e)}
