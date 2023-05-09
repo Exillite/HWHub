@@ -26,7 +26,7 @@ const routes = [{
             import ('@/pages/Groups.vue'),
     },
     {
-        path: '/group',
+        path: '/group/:id',
         name: 'Group',
         component: () =>
             import ('@/pages/Group.vue'),
