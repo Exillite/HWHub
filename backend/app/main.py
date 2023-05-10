@@ -9,7 +9,7 @@ from hwhub import models
 
 from db import connect_to_mongo, close_mongo_connection
 
-from hwhub.modules import auth, user, student_group, homework, submission
+from hwhub.modules import auth, user, student_group, homework, submission, files
 
 
 app = FastAPI(
@@ -50,6 +50,7 @@ app.include_router(user.router)
 app.include_router(student_group.router)
 app.include_router(homework.router)
 app.include_router(submission.router)
+app.include_router(files.router)
 
 
 @app.on_event("startup")

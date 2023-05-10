@@ -24,6 +24,7 @@ services:
       - custom
     volumes:
       - ./backend/app:/app
+      - upload_files:/upload_files
     depends_on:
       - mongo_db
 
@@ -56,3 +57,4 @@ networks:
 volumes:
   db_data:
   backend_data:
+  upload_files:

@@ -1008,3 +1008,16 @@ Example:
   - 200 - OK
   - 400 - Auth fail or permission denied
   - 500 - Server error
+
+
+## *Files*
+
+### Upload files
+- URL: `/api/v0.1/files/upload`
+- method: **POST**
+- auth required: **YES**
+
+### Downlonload file
+- URL: `/api/v0.1/files/download/{filename}`
+- method: **GET**
+- auth required: **YES**
