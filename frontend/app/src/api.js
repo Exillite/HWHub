@@ -83,7 +83,7 @@ export default {
 
     async create_new_homework(
         title,
-        file,
+        files,
         student_group_id,
         deadline,
         points,
@@ -91,7 +91,7 @@ export default {
     ) {
         return axios.post("/homework", {
             title: title,
-            file,
+            files,
             student_group_id: student_group_id,
             deadline: deadline,
             points: points,
@@ -106,14 +106,14 @@ export default {
     async edit_homework(
         homework_id,
         title,
-        file,
+        files,
         deadline,
         points,
         mark_formula
     ) {
         return axios.put(`/homework/${homework_id}`, {
             title: title,
-            file,
+            files,
             deadline: deadline,
             points: points,
             mark_formula: mark_formula,
@@ -180,5 +180,19 @@ export default {
 
     async get_homework_results(homework_id) {
         return axios.get(`/homework/${homework_id}/submissions`);
+    },
+
+    async upload_files(files) {
+        console.log(files);
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+
+        return axios.post('/files/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     },
 };

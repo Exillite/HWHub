@@ -5,7 +5,6 @@
         >ЛОГО</v-toolbar-title
       >
       <v-spacer></v-spacer>
-
     </v-app-bar>
     <v-main>
       <v-container>
@@ -45,11 +44,31 @@
                   </v-card-item>
 
                   <v-card-actions>
-                    <v-btn variant="outlined"> Открыть </v-btn>
+                    <v-btn
+                      variant="outlined"
+                      @click="
+                        $router.push({
+                          name: 'Homework',
+                          params: { id: homework.id },
+                        })
+                      "
+                      >Открыть</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-col>
             </v-row>
+
+            <v-btn
+              v-if="user.role === 'teacher' || user.role === 'admin'"
+              @click="new_homework_dialog = true"
+              variant="outlined"
+              size="x-large"
+              class="new-homework-btn"
+              color="info"
+            >
+              Добавить задание
+            </v-btn>
           </v-window-item>
 
           <v-window-item value="students">
@@ -84,7 +103,7 @@
               </v-card-item>
 
               <v-card-text>
-                <v-form @submit.prevent variant="outlined">
+                <v-form @submit.prevent="submit_edit_group" variant="outlined">
                   <v-text-field
                     v-model="new_title"
                     variant="outlined"
@@ -105,22 +124,18 @@
 
               <v-card-text>
                 <v-card
-                  v-for="student in students"
-                  :key="student.id"
+                  v-for="consultant in consultants"
+                  :key="consultant.id"
                   variant="outlined"
                   class="d-flex align-center justify-space-between pa-2 ma-2"
                 >
                   <p class="fon">
-                    {{ student.name }} {{ student.surname }}
-                    {{ student.patronymic }}
+                    {{ consultant.name }} {{ consultant.surname }}
+                    {{ consultant.patronymic }}
                   </p>
                   <v-spacer></v-spacer>
                   <v-btn color="red">Исключить</v-btn>
                 </v-card>
-
-                <v-btn variant="outlined" type="submit" class="mt-2"
-                  >Добавить</v-btn
-                >
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -128,14 +143,69 @@
       </v-container>
     </v-main>
   </v-app>
+
+  <v-dialog v-model="new_homework_dialog">
+    <v-card title="Создание нового задания">
+      <form @submit.prevent="submit_create_homework">
+        <v-card-text>
+          <v-text-field
+            v-model="new_homework_form.title"
+            label="Название задания"
+            type="text"
+            variant="outlined"
+            required
+          ></v-text-field>
+
+          <v-file-input
+            v-model="new_homework_form.files"
+            multiple
+            variant="outlined"
+            label="Файлы с заданием"
+            prepend-icon=""
+          ></v-file-input>
+
+          <v-text-field
+            variant="outlined"
+            label="Срок сдачи"
+            type="datetime-local"
+            v-model="new_homework_form.deadline"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="new_homework_form.mark_formula"
+            label="Формула для расчёта оценки"
+            type="text"
+            variant="outlined"
+            required
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            variant="outlined"
+            @click="new_homework_dialog = false"
+            color="error"
+            >Отмена</v-btn
+          >
+          <v-btn variant="outlined" type="submit" color="success"
+            >Создать</v-btn
+          >
+        </v-card-actions>
+      </form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 import api from "@/api.js";
+import control from "@/control.js";
 
 export default {
   data() {
     return {
+      user: {},
+
       new_title: "sdada",
 
       headers: [
@@ -167,134 +237,112 @@ export default {
       ],
 
       tab: null,
-      group: {
-        id: "123456",
-        title: "Computer classes 01",
-        teacher: {
-          id: "789012",
-          login: "janedoe",
-          role: "teacher",
-          name: "Jane",
-          surname: "Doe",
-          patronymic: "R.",
-          email: "janedoe@example.com",
-          vk_id: null,
-          telegram_id: null,
-          is_active: true,
-        },
-        connect_code: "abc123",
-        is_active: true,
-      },
-      homeworks: [
-        {
-          id: "123456",
-          title: "Programming Assignment 1",
-          file: "https://example.com/programming-assignment-1.pdf",
-          student_group: {
-            id: "654321",
-            title: "Computer Science 101",
-            teacher: {
-              id: "789012",
-              login: "janedoe",
-              role: "teacher",
-              name: "Jane",
-              surname: "Doe",
-              patronymic: "R.",
-              email: "janedoe@example.com",
-              vk_id: null,
-              telegram_id: null,
-              is_active: true,
-            },
-            connect_code: "abc123",
-            is_active: true,
-          },
-          uploaded_at: "2023-04-02T10:00:00Z",
-          deadline: "2023-04-09T10:00:00Z",
-          last_updated_at: "2023-04-03T15:30:00Z",
-          points: [7.5, 5.0, 2.5],
-          mark_formula: "(K + 3) / 10",
-          is_active: true,
-        },
-      ],
+      group: {},
+      homeworks: [],
 
-      students: [
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "Johdskjn",
-          surname: "Ddsfahoe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "John",
-          surname: "Doe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "John",
-          surname: "Doe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "John",
-          surname: "Doe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "John",
-          surname: "Doe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-        {
-          id: "123456",
-          login: "johndoe",
-          role: "student",
-          name: "John",
-          surname: "Doe",
-          patronymic: "Wladimirovich",
-          email: "johndoe@example.com",
-          vk_id: 123456789,
-          telegram_id: 987654321,
-          is_active: true,
-        },
-      ],
+      students: [],
+
+      consultants: [],
+
+      new_homework_dialog: false,
+
+      new_homework_form: {
+        title: "",
+        files: [],
+        deadline: null,
+        points: [1],
+        mark_formula: "",
+      },
     };
   },
 
+  mounted() {
+    if (!control.check_auth()) {
+      this.$router.push({ name: "Login" });
+    }
+
+    api.me().then((response) => {
+      if (response.data.status == 200) {
+        this.user = response.data.user;
+      }
+    });
+
+    api.get_student_group(this.$route.params.id).then((response) => {
+      if (response.data.status == 200) {
+        this.group = response.data.student_group;
+        this.new_title = this.group.title;
+
+        api.get_all_homeworks_from_student_group(this.group.id).then((res) => {
+          if (res.data.status == 200) {
+            this.homeworks = res.data.homeworks;
+          }
+        });
+
+        api.get_student_groups_students(this.group.id).then((res) => {
+          if (res.data.status == 200) {
+            this.students = res.data.users;
+          }
+        });
+
+        api.get_student_groups_consultants(this.group.id).then((res) => {
+          if (res.data.status == 200) {
+            this.consultants = res.data.users;
+          }
+        });
+      }
+    });
+  },
+
   methods: {
+    submit_create_homework() {
+      api.upload_files(this.new_homework_form.files).then((response) => {
+        if (response.data.status == 200) {
+          api
+            .create_new_homework(
+              this.new_homework_form.title,
+              response.data.files,
+              this.group.id,
+              this.new_homework_form.deadline,
+              this.new_homework_form.points,
+              this.new_homework_form.mark_formula
+            )
+            .then((res) => {
+              if (res.data.status == 200) {
+                api
+                  .get_all_homeworks_from_student_group(this.group.id)
+                  .then((r) => {
+                    if (r.data.status == 200) {
+                      this.homeworks = r.data.homeworks;
+                      this.new_homework_dialog = false;
+
+                      this.new_homework_form = {
+                        title: "",
+                        files: [],
+                        deadline: null,
+                        points: [1],
+                        mark_formula: "",
+                      };
+                    }
+                  });
+              }
+            });
+        }
+      });
+    },
+
+    submit_edit_group() {
+      api.edit_student_group(this.group.id, this.new_title).then((response) => {
+        if (response.data.status == 200) {
+          api.get_student_group(this.$route.params.id).then((response) => {
+            if (response.data.status == 200) {
+              this.group = response.data.student_group;
+              this.new_title = this.group.title;
+            }
+          });
+        }
+      });
+    },
+
     date_format(date_str) {
       let date = new Date(date_str);
       const year = date.getFullYear();
@@ -309,4 +357,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.new-homework-btn {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+
+  margin: 40px;
+}
+</style>

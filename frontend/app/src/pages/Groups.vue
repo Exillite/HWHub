@@ -70,7 +70,7 @@
 
   <v-dialog v-model="new_group_dialog">
     <v-card title="Создание новой группы">
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submit_create">
         <v-card-text>
           <v-text-field
             v-model="new_group_form.title"
@@ -142,7 +142,7 @@ export default {
         title: "",
       },
       connect_group_form: {
-        code: '',
+        code: "",
       },
     };
   },

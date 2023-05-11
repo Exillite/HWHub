@@ -32,7 +32,7 @@ const routes = [{
             import ('@/pages/Group.vue'),
     },
     {
-        path: '/homework',
+        path: '/homework/:id',
         name: 'Homework',
         component: () =>
             import ('@/pages/Homework.vue'),
