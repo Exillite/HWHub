@@ -56,4 +56,4 @@ async def download_file(filename: str):
     try:
         return FileResponse(FILES_PATH + filename)
     except Exception as e:
-        return {"status": 500, "error": 500}
+        return {"status": 500, "error": str(e)}
