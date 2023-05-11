@@ -1,11 +1,16 @@
 import Main from '@/pages/Main.vue'
 import { createWebHistory, createRouter } from 'vue-router'
-import cookie from '@/cookie'
 
 const routes = [{
         path: '/',
         name: 'Main',
         component: Main,
+    },
+    {
+        path: '/error',
+        name: 'Error',
+        component: () =>
+            import ('@/pages/404.vue'),
     },
     {
         path: '/login',

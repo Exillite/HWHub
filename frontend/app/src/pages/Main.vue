@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import api from "@/api.js";
 import control from "@/control";
 
 export default {

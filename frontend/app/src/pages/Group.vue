@@ -14,9 +14,21 @@
 
         <v-tabs v-model="tab" align-tabs="center">
           <v-tab value="tasks">Задания</v-tab>
-          <v-tab value="students">Ученики</v-tab>
+          <v-tab
+            v-if="
+              user.role == 'admin' ||
+              user.role == 'consultant' ||
+              user.role == 'teacher'
+            "
+            value="students"
+            >Ученики</v-tab
+          >
           <v-tab value="marks">Оценки</v-tab>
-          <v-tab value="settings">Настройки</v-tab>
+          <v-tab
+            v-if="user.role == 'admin' || user.role == 'teacher'"
+            value="settings"
+            >Настройки</v-tab
+          >
         </v-tabs>
         <br />
         <v-window v-model="tab">
@@ -83,7 +95,7 @@
                 {{ student.patronymic }}
               </p>
               <v-spacer></v-spacer>
-              <v-btn color="red">Исключить</v-btn>
+              <v-btn @click="kick_user(student.id)" color="red">Исключить</v-btn>
             </v-card>
           </v-window-item>
 
@@ -134,7 +146,7 @@
                     {{ consultant.patronymic }}
                   </p>
                   <v-spacer></v-spacer>
-                  <v-btn color="red">Исключить</v-btn>
+                  <v-btn @click="kick_user(consultant.id)" color="red">Исключить</v-btn>
                 </v-card>
               </v-card-text>
             </v-card>
@@ -289,6 +301,8 @@ export default {
             this.consultants = res.data.users;
           }
         });
+      } else {
+        this.$router.push({name: "Error"})
       }
     });
   },
@@ -341,6 +355,26 @@ export default {
           });
         }
       });
+    },
+
+    kick_user(user_id) {
+      api
+        .kick_user_from_students_group(this.group.id, user_id)
+        .then((response) => {
+          if (response.data.status == 200) {
+            api.get_student_groups_students(this.group.id).then((res) => {
+              if (res.data.status == 200) {
+                this.students = res.data.users;
+              }
+            });
+
+            api.get_student_groups_consultants(this.group.id).then((res) => {
+              if (res.data.status == 200) {
+                this.consultants = res.data.users;
+              }
+            });
+          }
+        });
     },
 
     date_format(date_str) {
