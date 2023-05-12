@@ -22,7 +22,7 @@
           <b>{{ date_format(homework.last_updated_at) }}</b>
         </p>
         <p>
-          Срок сдачи: date_formate<b>{{ date_format(homework.deadline) }}</b>
+          Срок сдачи: <b>{{ date_format(homework.deadline) }}</b>
         </p>
         <p>
           Формула расчёта оценки: <b>{{ homework.mark_formula }}</b>
@@ -37,22 +37,27 @@
         <v-window v-model="tab">
           <v-window-item value="tasks">
             <v-row align="stretch">
-              <v-col :key="index" cols="12" sm="6" md="4" lg="3">
+              <v-col
+                v-for="(file, index) in homework.files"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+              >
                 <v-card variant="outlined">
                   <v-card-item>
                     <div>
                       <div class="text-h6 mb-1">
-                        {{
-                          homework.file.substring(
-                            homework.file.lastIndexOf("/") + 1
-                          )
-                        }}
+                        {{ file.replace("_", " ") }}
                       </div>
                     </div>
                   </v-card-item>
 
                   <v-card-actions>
-                    <v-btn variant="outlined"> Скачать </v-btn>
+                    <v-btn variant="outlined" @click="download_file(file)">
+                      Скачать
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -75,7 +80,10 @@
               </v-card-item>
 
               <v-card-text>
-                <v-form @submit.prevent variant="outlined">
+                <v-form
+                  @submit.prevent="submit_edit_homework"
+                  variant="outlined"
+                >
                   <v-text-field
                     v-model="new_title"
                     variant="outlined"
@@ -86,6 +94,7 @@
                     variant="outlined"
                     label="Срок сдачи"
                     type="datetime-local"
+                    format="yyyy-MM-ddTHH:mm"
                     v-model="new_dedline"
                     required
                   ></v-text-field>
@@ -94,6 +103,7 @@
                       <tr>
                         <th class="text-left">Номер задания</th>
                         <th class="text-left">Кол. балов</th>
+                        <th style="width: 10px"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -101,15 +111,21 @@
                         <td>{{ ind }}</td>
                         <td>
                           <v-text-field
+                            required
                             v-model="new_points[ind - 1]"
                             variant="underlined"
                             type="number"
                           ></v-text-field>
                         </td>
+                        <td>
+                          <v-col cols="auto">
+                            <v-btn density="compact" icon="mdi-delete"></v-btn>
+                          </v-col>
+                        </td>
                       </tr>
                     </tbody>
                   </v-table>
-                  <v-btn variant="outlined" @click="new_points.push(1)"
+                  <v-btn block variant="outlined" @click="new_points.push(1)"
                     >Добавить занятие</v-btn
                   >
                   <br />
@@ -137,44 +153,19 @@
 
 <script>
 import api from "@/api.js";
+import control from "@/control.js";
 
 export default {
   data() {
     return {
-      new_title: "aboba",
+      user: {},
+
+      new_title: "",
       new_dedline: null,
       new_mark_formula: null,
-      new_points: [1, 1, 1, 1],
+      new_points: [],
 
-      homework: {
-        id: "123456",
-        title: "Programming Assignment 1",
-        file: "https://example.com/programming-assignment-1.pdf",
-        student_group: {
-          id: "654321",
-          title: "Computer Science 101",
-          teacher: {
-            id: "789012",
-            login: "janedoe",
-            role: "teacher",
-            name: "Jane",
-            surname: "Doe",
-            patronymic: "R.",
-            email: "janedoe@example.com",
-            vk_id: null,
-            telegram_id: null,
-            is_active: true,
-          },
-          connect_code: "abc123",
-          is_active: true,
-        },
-        uploaded_at: "2023-04-02T10:00:00Z",
-        deadline: "2023-04-09T10:00:00Z",
-        last_updated_at: "2023-04-03T15:30:00Z",
-        points: [7.5, 5.0, 2.5],
-        mark_formula: "(K + 3) / 10",
-        is_active: true,
-      },
+      homework: {},
 
       headers: [
         { text: "ФИО", value: "user", fixed: true },
@@ -199,7 +190,63 @@ export default {
     };
   },
 
+  mounted() {
+    if (!control.check_auth()) {
+      this.$router.push({ name: "Login" });
+    }
+
+    api.me().then((response) => {
+      if (response.data.status == 200) {
+        this.user = response.data.user;
+      }
+    });
+
+    api.get_homework(this.$route.params.id).then((response) => {
+      if (response.data.status == 200) {
+        this.homework = response.data.homework;
+
+        this.new_title = this.homework.title;
+        this.new_dedline = this.homework.deadline;
+        this.new_mark_formula = this.homework.mark_formula;
+        this.new_points = this.homework.points;
+      } else {
+        this.$router.push({ name: "Error" });
+      }
+    });
+  },
+
   methods: {
+    download_file(file) {
+      const link = document.createElement("a");
+      link.href = `/api/v0.1/files/download/${file}`;
+      link.download = file;
+      link.click();
+    },
+
+    submit_edit_homework() {
+      api
+        .edit_homework(
+          this.homework.id,
+          this.new_title,
+          this.homework.files,
+          this.new_dedline,
+          this.new_points,
+          this.new_mark_formula
+        )
+        .then((response) => {
+          if (response.data.status == 200) {
+            api.get_homework(this.homework.id).then((res) => {
+              this.homework = res.data.homework;
+
+              this.new_title = this.homework.title;
+              this.new_dedline = this.homework.deadline;
+              this.new_mark_formula = this.homework.mark_formula;
+              this.new_points = this.homework.points;
+            });
+          }
+        });
+    },
+
     date_format(date_str) {
       let date = new Date(date_str);
       const year = date.getFullYear();
@@ -219,5 +266,9 @@ table,
 th,
 td {
   border: 0.5px groove #666666;
+}
+
+table {
+  border-radius: 5px;
 }
 </style>

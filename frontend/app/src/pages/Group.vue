@@ -95,7 +95,9 @@
                 {{ student.patronymic }}
               </p>
               <v-spacer></v-spacer>
-              <v-btn @click="kick_user(student.id)" color="red">Исключить</v-btn>
+              <v-btn @click="kick_user(student.id)" color="red"
+                >Исключить</v-btn
+              >
             </v-card>
           </v-window-item>
 
@@ -146,7 +148,9 @@
                     {{ consultant.patronymic }}
                   </p>
                   <v-spacer></v-spacer>
-                  <v-btn @click="kick_user(consultant.id)" color="red">Исключить</v-btn>
+                  <v-btn @click="kick_user(consultant.id)" color="red"
+                    >Исключить</v-btn
+                  >
                 </v-card>
               </v-card-text>
             </v-card>
@@ -218,7 +222,7 @@ export default {
     return {
       user: {},
 
-      new_title: "sdada",
+      new_title: "",
 
       headers: [
         { text: "ФИО", value: "user", fixed: true },
@@ -302,7 +306,7 @@ export default {
           }
         });
       } else {
-        this.$router.push({name: "Error"})
+        this.$router.push({ name: "Error" });
       }
     });
   },
