@@ -119,7 +119,11 @@
                         </td>
                         <td>
                           <v-col cols="auto">
-                            <v-btn density="compact" icon="mdi-delete"></v-btn>
+                            <v-btn
+                              @click="remouve_point(ind)"
+                              density="compact"
+                              icon="mdi-delete"
+                            ></v-btn>
                           </v-col>
                         </td>
                       </tr>
@@ -138,9 +142,17 @@
                     required
                   ></v-text-field>
 
-                  <v-btn variant="outlined" type="submit" class="mt-2"
-                    >Сохранить</v-btn
-                  >
+                  <v-file-input
+                    v-model="new_files"
+                    multiple
+                    variant="outlined"
+                    label="Заменить файлы с заданием"
+                    prepend-icon=""
+                  ></v-file-input>
+
+                  <v-btn variant="outlined" type="submit" class="mt-2">
+                    Сохранить
+                  </v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -149,6 +161,58 @@
       </v-container>
     </v-main>
   </v-app>
+
+  <v-dialog v-model="new_submission_dialog">
+    <v-card title="Создание нового задания">
+      <form @submit.prevent="submit_create_submission">
+        <v-card-text>
+          <v-text-field
+            v-model="new_homework_form.title"
+            label="Название задания"
+            type="text"
+            variant="outlined"
+            required
+          ></v-text-field>
+
+          <v-file-input
+            v-model="new_homework_form.files"
+            multiple
+            variant="outlined"
+            label="Файлы с заданием"
+            prepend-icon=""
+          ></v-file-input>
+
+          <v-text-field
+            variant="outlined"
+            label="Срок сдачи"
+            type="datetime-local"
+            v-model="new_homework_form.deadline"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="new_homework_form.mark_formula"
+            label="Формула для расчёта оценки"
+            type="text"
+            variant="outlined"
+            required
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            variant="outlined"
+            @click="new_submission_dialog = false"
+            color="error"
+            >Отмена</v-btn
+          >
+          <v-btn variant="outlined" type="submit" color="success"
+            >Создать</v-btn
+          >
+        </v-card-actions>
+      </form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -164,6 +228,7 @@ export default {
       new_dedline: null,
       new_mark_formula: null,
       new_points: [],
+      new_files: [],
 
       homework: {},
 
@@ -187,6 +252,8 @@ export default {
         },
       ],
       tab: null,
+
+      new_submission_dialog: false,
     };
   },
 
@@ -224,27 +291,64 @@ export default {
     },
 
     submit_edit_homework() {
-      api
-        .edit_homework(
-          this.homework.id,
-          this.new_title,
-          this.homework.files,
-          this.new_dedline,
-          this.new_points,
-          this.new_mark_formula
-        )
-        .then((response) => {
-          if (response.data.status == 200) {
-            api.get_homework(this.homework.id).then((res) => {
-              this.homework = res.data.homework;
-
-              this.new_title = this.homework.title;
-              this.new_dedline = this.homework.deadline;
-              this.new_mark_formula = this.homework.mark_formula;
-              this.new_points = this.homework.points;
-            });
+      if (this.new_files != []) {
+        api.upload_files(this.new_files).then((res) => {
+          let new_files = [];
+          if (res.data.status == 200) {
+            new_files = res.data.files;
+          } else {
+            new_files = this.homework.files;
           }
+          api
+            .edit_homework(
+              this.homework.id,
+              this.new_title,
+              new_files,
+              this.new_dedline,
+              this.new_points,
+              this.new_mark_formula
+            )
+            .then((response) => {
+              if (response.data.status == 200) {
+                api.get_homework(this.homework.id).then((res) => {
+                  this.homework = res.data.homework;
+
+                  this.new_title = this.homework.title;
+                  this.new_dedline = this.homework.deadline;
+                  this.new_mark_formula = this.homework.mark_formula;
+                  this.new_points = this.homework.points;
+                  this.new_files = [];
+                });
+              }
+            });
         });
+      } else {
+        api
+          .edit_homework(
+            this.homework.id,
+            this.new_title,
+            this.homework.files,
+            this.new_dedline,
+            this.new_points,
+            this.new_mark_formula
+          )
+          .then((response) => {
+            if (response.data.status == 200) {
+              api.get_homework(this.homework.id).then((res) => {
+                this.homework = res.data.homework;
+
+                this.new_title = this.homework.title;
+                this.new_dedline = this.homework.deadline;
+                this.new_mark_formula = this.homework.mark_formula;
+                this.new_points = this.homework.points;
+              });
+            }
+          });
+      }
+    },
+
+    remouve_point(ind) {
+      this.new_points.splice(ind, 1);
     },
 
     date_format(date_str) {

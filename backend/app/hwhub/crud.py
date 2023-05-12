@@ -98,6 +98,15 @@ async def create_homework(hw: HomeworkCreate) -> Optional[HomeworkModel]:
     )
     await homework.create()
 
+    students = await get_students_from_students_group(student_group)
+    if homework.id:
+        for student in students:
+            if student.id:
+                await create_submission(SubmissionCreate(
+                    homework_id=homework.id,
+                    student_id=student.id
+                ))
+
     return homework
 
 
@@ -117,6 +126,10 @@ async def edit_homework(hw: HomeworkUpdate, hw_id: str) -> Optional[HomeworkMode
         homework.last_updated_at = datetime.now()
 
         await homework.update()
+
+        submissions = await get_submissions_by_homework(homework)
+        for sub in submissions:
+            await update_submission_points(sub, len(homework.points))
 
         await recalculate_homework_marks(homework)
 
@@ -183,6 +196,13 @@ async def delete_submission(sub_id: str):
 
 
 # ------------------------ ADDITIONAL METHODS ------------------------
+
+async def update_submission_points(sub: SubmissionModel, points_cnt: int):
+    if len(sub.points) < points_cnt:
+        sub.points += [0.0] * (points_cnt - len(sub.points))
+    if len(sub.points) > points_cnt:
+        sub.points = sub.points[:points_cnt]
+    await sub.update()
 
 
 async def get_all_submission_by_homework(hw: HomeworkModel) -> List[SubmissionModel]:
@@ -257,3 +277,16 @@ async def add_user_to_student_group(student_group_id: str, user_id: str):
     if student_group not in user.students_groups and student_group.teacher.id != user.id:
         user.students_groups.append(student_group)
         await user.update()
+
+        homeworks = await get_homeworks_by_students_group(student_group)
+        if not user.id:
+            return
+        for homework in homeworks:
+            if not homework.id:
+                continue
+            submission = await get_submission_by_homework_and_student(homework, user)
+            if not submission:
+                await create_submission(SubmissionCreate(
+                    homework_id=homework.id,
+                    student_id=user.id
+                ))
