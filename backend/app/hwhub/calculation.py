@@ -16,5 +16,7 @@ def calculate_mark(hw_points, sub_points, formula, fine) -> float:
         [(CNT, points_count), (C, done_count), (K, sum_total_points)])
 
     mark = calc + fine
-    mark = round(mark, 2)
-    return float(mark)
+    mark = float(round(mark, 2))
+    if mark > 10: # TODO make max mark editable
+        mark = 10
+    return mark
