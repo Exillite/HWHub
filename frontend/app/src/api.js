@@ -183,16 +183,23 @@ export default {
     },
 
     async upload_files(files) {
-        console.log(files);
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
-            formData.append('files', files[i]);
+            formData.append("files", files[i]);
         }
 
-        return axios.post('/files/upload', formData, {
+        return axios.post("/files/upload", formData, {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
             },
         });
+    },
+
+    async get_student_group_marks(student_group_id) {
+        return axios.get(`/student_group/${student_group_id}/get_marks`);
+    },
+
+    async get_homework_marks(homework_id) {
+        return axios.get(`/homework/${homework_id}/marks`);
     },
 };
