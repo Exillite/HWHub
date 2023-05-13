@@ -347,13 +347,18 @@ export default {
                 this.new_mark_formula = this.homework.mark_formula;
                 this.new_points = this.homework.points;
               });
+
+              api.get_homework_marks(this.homework.id).then((res) => {
+                this.items = res.data.marks.users;
+                this.show_marks();
+              });
             }
           });
       }
     },
 
     remouve_point(ind) {
-      this.new_points.splice(ind, 1);
+      this.new_points.splice(ind - 1, 1);
     },
 
     date_format(date_str) {
