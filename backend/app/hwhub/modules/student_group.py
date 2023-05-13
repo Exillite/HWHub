@@ -182,16 +182,16 @@ async def get_marks(student_group_id: str, current_user: schemas.User = Depends(
         stds = await crud.get_students_from_students_group(stg)
         hws = await crud.get_homeworks_by_students_group(stg)
 
-        resp = {'items': []}  # type: ignore
+        resp = []
 
         for std in stds:
-            resp['items'].append(
+            resp.append(
                 {'user': f"{std.name} {std.surname} {std.patronymic}"})
 
             for hw in hws:
                 submission = await crud.get_submission_by_homework_and_student(hw, std)
-                if submission:
-                    resp['items'][-1][hw.id] = submission.mark
+                if submission and hw.id:
+                    resp[-1][hw.id] = submission.mark  # type: ignore
 
         return {"status": 200, "marks": resp}
     except Exception as e:
