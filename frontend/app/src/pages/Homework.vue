@@ -232,14 +232,7 @@ export default {
 
       homework: {},
 
-      headers: [
-        { text: "ФИО", value: "user", fixed: true },
-        { text: "1", value: "1" },
-        { text: "2", value: "2" },
-        { text: "3", value: "3" },
-        { text: "Штраф", value: "fine" },
-        { text: "Оценка", value: "mark" },
-      ],
+      headers: [{ text: "ФИО", value: "user", fixed: true }],
 
       items: [
         {
@@ -276,6 +269,12 @@ export default {
         this.new_dedline = this.homework.deadline;
         this.new_mark_formula = this.homework.mark_formula;
         this.new_points = this.homework.points;
+
+        api.get_homework_marks(this.homework.id).then((res) => {
+          this.show_marks();
+
+          this.items = res.data.marks.users;
+        });
       } else {
         this.$router.push({ name: "Error" });
       }
@@ -290,8 +289,17 @@ export default {
       link.click();
     },
 
+    show_marks() {
+      for (let i = 0; i < this.homework.points.length; i++) {
+        this.headers.push({ text: (i + 1).toString(), value: i.toString() });
+      }
+
+      this.headers.push({ text: "Штраф", value: "fine" });
+      this.headers.push({ text: "Оценка", value: "mark" });
+    },
+
     submit_edit_homework() {
-      if (this.new_files != []) {
+      if (this.new_files.length != 0) {
         api.upload_files(this.new_files).then((res) => {
           let new_files = [];
           if (res.data.status == 200) {
