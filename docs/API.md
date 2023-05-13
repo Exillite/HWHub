@@ -687,6 +687,24 @@ Example:
   - 400 - Auth fail or permission denied
   - 500 - Server error
 
+### Get Student Group`s results
+- URL: `/api/v0.1/student_group/{student_group_id}/get_marks`
+- method: **GET**
+- auth required: **YES**
+- response body:
+```json
+{
+    "status": int,
+    "marks": [
+        {
+            "user": str, // Name Surname Patronymic
+            "<hw_ids>": str // Mark for this homework
+            ...
+        }
+    ]
+}
+```
+
 
 ## **Homework**
 
