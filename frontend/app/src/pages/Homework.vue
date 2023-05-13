@@ -234,16 +234,7 @@ export default {
 
       headers: [{ text: "ФИО", value: "user", fixed: true }],
 
-      items: [
-        {
-          user: "Alexander Rodionov Vladimirovich",
-          1: 1,
-          2: 0.2,
-          3: 2,
-          fine: 1,
-          mark: 10,
-        },
-      ],
+      items: [],
       tab: null,
 
       new_submission_dialog: false,
@@ -271,9 +262,8 @@ export default {
         this.new_points = this.homework.points;
 
         api.get_homework_marks(this.homework.id).then((res) => {
-          this.show_marks();
-
           this.items = res.data.marks.users;
+          this.show_marks();
         });
       } else {
         this.$router.push({ name: "Error" });
@@ -293,6 +283,13 @@ export default {
       for (let i = 0; i < this.homework.points.length; i++) {
         this.headers.push({ text: (i + 1).toString(), value: i.toString() });
       }
+
+      this.items.forEach((item) => {
+        for (let i = 0; i < this.homework.points.length; i++) {
+          console.log(item);
+          item[i.toString()] *= this.homework.points[i];
+        }
+      });
 
       this.headers.push({ text: "Штраф", value: "fine" });
       this.headers.push({ text: "Оценка", value: "mark" });
