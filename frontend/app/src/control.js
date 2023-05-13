@@ -1,15 +1,14 @@
-import cookie from "@/cookie"
+import cookie from "@/cookie";
 
 export default {
-
     save_authorization(token) {
         const save_time = 60 * 60 * 24 * 7 * 2; // save on two week
 
-        cookie.setCookie('token', token, save_time);
+        cookie.setCookie("token", token, save_time);
     },
 
     get_authorization_token() {
-        let token = cookie.getCookie('token');
+        let token = cookie.getCookie("token");
         if (token === undefined) {
             return false;
         }
@@ -17,7 +16,7 @@ export default {
     },
 
     check_auth() {
-        const token = cookie.getCookie('token');
+        const token = cookie.getCookie("token");
         if (token === undefined) {
             return false;
         }
@@ -25,6 +24,6 @@ export default {
     },
 
     log_out() {
-        cookie.deleteCookie('token');
+        cookie.deleteCookie("token");
     },
-}
+};

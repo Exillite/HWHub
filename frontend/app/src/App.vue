@@ -1,22 +1,21 @@
 <template>
   <v-app>
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-  import { useLocale } from 'vuetify'
+import { useLocale } from "vuetify";
 
-  export default {
-    setup () {
-      const { current } = useLocale()
+export default {
+  setup() {
+    const { current } = useLocale();
 
-      return {
-        changeLocale: locale => current.value = locale
-      }
-    }
-  }
-
+    return {
+      changeLocale: (locale) => (current.value = locale),
+    };
+  },
+};
 </script>

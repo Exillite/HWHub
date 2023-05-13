@@ -1,53 +1,52 @@
-import Main from '@/pages/Main.vue'
-import { createWebHistory, createRouter } from 'vue-router'
+import Main from "@/pages/Main.vue";
+import { createWebHistory, createRouter } from "vue-router";
 
 const routes = [{
-        path: '/',
-        name: 'Main',
+        path: "/",
+        name: "Main",
         component: Main,
     },
     {
-        path: '/error',
-        name: 'Error',
+        path: "/error",
+        name: "Error",
         component: () =>
-            import ('@/pages/404.vue'),
+            import ("@/pages/404.vue"),
     },
     {
-        path: '/login',
-        name: 'Login',
+        path: "/login",
+        name: "Login",
         component: () =>
-            import ('@/pages/Login.vue'),
+            import ("@/pages/Login.vue"),
     },
     {
-        path: '/registration',
-        name: 'Registration',
+        path: "/registration",
+        name: "Registration",
         component: () =>
-            import ('@/pages/Registration.vue'),
+            import ("@/pages/Registration.vue"),
     },
     {
-        path: '/groups',
-        name: 'Groups',
+        path: "/groups",
+        name: "Groups",
         component: () =>
-            import ('@/pages/Groups.vue'),
+            import ("@/pages/Groups.vue"),
     },
     {
-        path: '/group/:id',
-        name: 'Group',
+        path: "/group/:id",
+        name: "Group",
         component: () =>
-            import ('@/pages/Group.vue'),
+            import ("@/pages/Group.vue"),
     },
     {
-        path: '/homework/:id',
-        name: 'Homework',
+        path: "/homework/:id",
+        name: "Homework",
         component: () =>
-            import ('@/pages/Homework.vue'),
+            import ("@/pages/Homework.vue"),
     },
-]
+];
 
 const router = new createRouter({
     history: createWebHistory(),
-    routes
-})
+    routes,
+});
 
-
-export default router
+export default router;
