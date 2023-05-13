@@ -88,3 +88,12 @@ async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User 
         return {"status": 200, "student_groups": students_groups}
     except Exception as e:
         return {"status": 500, "error": str(e)}
+
+
+@router.patch("/connect/{student_group_id}")
+async def connect_current_user_to_student_group(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+    try:
+        await crud.add_user_to_student_group(student_group_id, current_user.id)
+        return {"status": 200}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}

@@ -186,7 +186,7 @@ export default {
 
     submit_connect() {
       api
-        .add_user_to_students_group(this.connect_group_form.code, this.user.id)
+        .connect_me_to_student_group(this.connect_group_form.code)
         .then((response) => {
           if (response.data.status == 200) {
             this.group_connect_dialog = false;
