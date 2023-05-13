@@ -290,3 +290,26 @@ async def add_user_to_student_group(student_group_id: str, user_id: str):
                     homework_id=homework.id,
                     student_id=user.id
                 ))
+
+
+async def add_user_to_student_group_by_code(student_group_code: str, user_id: str):
+    student_group = await StudentGroupModel.get(connect_code=student_group_code)
+    user = await UserModel.get(id=user_id)
+    if not student_group or not user:
+        return
+    if student_group not in user.students_groups and student_group.teacher.id != user.id:
+        user.students_groups.append(student_group)
+        await user.update()
+
+        homeworks = await get_homeworks_by_students_group(student_group)
+        if not user.id:
+            return
+        for homework in homeworks:
+            if not homework.id:
+                continue
+            submission = await get_submission_by_homework_and_student(homework, user)
+            if not submission:
+                await create_submission(SubmissionCreate(
+                    homework_id=homework.id,
+                    student_id=user.id
+                ))

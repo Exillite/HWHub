@@ -203,7 +203,7 @@ export default {
         return axios.get(`/homework/${homework_id}/marks`);
     },
 
-    async connect_me_to_student_group(student_group_id) {
-        return axios.patch(`/user/connect/${student_group_id}`);
+    async connect_me_to_student_group(student_group_code) {
+        return axios.patch(`/user/connect/${student_group_code}`);
     },
 };
