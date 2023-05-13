@@ -229,7 +229,7 @@ async def get_submissions_by_homework(hw: HomeworkModel) -> List[SubmissionModel
 
 
 async def get_submission_by_homework_and_student(hw: HomeworkModel, user: UserModel) -> Optional[SubmissionModel]:
-    sub = await SubmissionModel.get(homework=hw, student=user)
+    sub = await SubmissionModel.get(homework=hw.id, student=user.id)
     return sub
 
 
