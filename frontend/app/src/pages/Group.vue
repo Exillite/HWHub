@@ -224,18 +224,7 @@ export default {
 
       new_title: "",
 
-      headers: [
-        { text: "ФИО", value: "user", fixed: true },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-        { text: "02.04.23", value: "123" },
-      ],
+      headers: [{ text: "ФИО", value: "user", fixed: true }],
 
       items: [
         {
@@ -248,7 +237,6 @@ export default {
         },
         {
           user: "Alexander Rodionov Vladimirovich",
-          123: 6,
         },
       ],
 
@@ -305,6 +293,13 @@ export default {
             this.consultants = res.data.users;
           }
         });
+
+        api.get_student_group_marks(this.group.id).then((res) => {
+          if (res.data.status == 200) {
+            this.show_marks();
+            this.items = res.data.marks;
+          }
+        });
       } else {
         this.$router.push({ name: "Error" });
       }
@@ -312,6 +307,16 @@ export default {
   },
 
   methods: {
+    show_marks() {
+      for (let i = 0; i < this.homeworks.length; i++) {
+        const homework = this.homeworks[i];
+        this.headers.push({
+          text: this.date_format(homework.deadline, false),
+          value: homework.id,
+        });
+      }
+    },
+
     submit_create_homework() {
       api.upload_files(this.new_homework_form.files).then((response) => {
         if (response.data.status == 200) {
@@ -381,15 +386,15 @@ export default {
         });
     },
 
-    date_format(date_str) {
+    date_format(date_str, with_time = true) {
       let date = new Date(date_str);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
       const hours = date.getHours().toString().padStart(2, "0");
       const minutes = date.getMinutes().toString().padStart(2, "0");
-
-      return `${day}.${month}.${year} ${hours}:${minutes}`;
+      if (with_time) return `${day}.${month}.${year} ${hours}:${minutes}`;
+      else return `${day}.${month}.${year}`;
     },
   },
 };
