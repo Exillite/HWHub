@@ -5,6 +5,9 @@ from .validations import *
 from . import calculation
 
 from datetime import datetime
+from string import ascii_lowercase, ascii_uppercase, digits
+import random
+import string
 
 
 async def create_user(user: UserCreate) -> UserModel:
@@ -49,12 +52,10 @@ async def create_student_group(stg: StudentGroupCreate) -> Optional[StudentGroup
     if not teacher:
         return None
 
+    code = await generate_unique_code()
     student_group = StudentGroupModel(
-        title=stg.title, teacher=teacher)
-
+        title=stg.title, teacher=teacher, connect_code=code)
     await student_group.create()
-    student_group.connect_code = student_group.id
-    await student_group.update()
 
     return student_group
 
@@ -196,6 +197,18 @@ async def delete_submission(sub_id: str):
 
 
 # ------------------------ ADDITIONAL METHODS ------------------------
+
+async def generate_unique_code(length: int = 6) -> str:
+    code = ''.join(random.choices(ascii_lowercase +
+                                  ascii_uppercase + digits, k=length))
+    group = await StudentGroupModel.get(connect_code=code)
+    while not group:
+        code = ''.join(random.choices(ascii_lowercase +
+                                      ascii_uppercase + digits, k=length))
+        group = await StudentGroupModel.get(connect_code=code)
+
+    return code
+
 
 async def update_submission_points(sub: SubmissionModel, points_cnt: int):
     if len(sub.points) < points_cnt:
