@@ -14,7 +14,7 @@ async def create_user(user: UserCreate) -> UserModel:
     new_user = UserModel(
         password=user.password,
         login=user.login,
-        role="user",  # TODO change to correct role
+        role="student",
         name=user.name,
         surname=user.surname,
         patronymic=user.patronymic,
@@ -202,7 +202,7 @@ async def generate_unique_code(length: int = 6) -> str:
     code = ''.join(random.choices(ascii_lowercase +
                                   ascii_uppercase + digits, k=length))
     group = await StudentGroupModel.get(connect_code=code)
-    while not group:
+    while group:
         code = ''.join(random.choices(ascii_lowercase +
                                       ascii_uppercase + digits, k=length))
         group = await StudentGroupModel.get(connect_code=code)
