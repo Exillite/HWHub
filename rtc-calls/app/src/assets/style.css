@@ -1,0 +1,162 @@
+html,
+body {
+    height: 100%;
+}
+
+.container-fluid {
+    background: rgb(32, 33, 37);
+}
+
+.left-panel {
+    height: 100%;
+    padding: 20px;
+}
+
+.tabs {
+    margin: auto;
+}
+
+.tab {
+    margin: 10px;
+    margin-bottom: 0px;
+    border-radius: 15px;
+    background: #bcbdc0;
+    width: 50%;
+    font-size: x-large;
+    border: 2px solid #a7a8a9;
+    border-bottom: 2px solid #7c7b7b;
+}
+
+.tab-active {
+    border: 2px solid #7c7b7b;
+}
+
+.tab:hover {
+    background: #a5a6a9;
+}
+
+.main-panel {
+    background: #d5d7db;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.right-panel {
+    height: 100%;
+    padding: 20px;
+    transition: hidden 1s ease-out;
+}
+
+.mini-panel {
+    background: #d5d7db;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.down-panel {
+    height: 100%;
+    padding: 20px;
+    padding-top: 0;
+}
+
+.footer-panel {
+    height: 100%;
+    border-radius: 10px;
+}
+
+.footer-btn {
+    background: #636B6D;
+    padding: 10px;
+    border-radius: 12px;
+    margin-left: 44px;
+    margin-right: 10px;
+    border: 2px solid black;
+}
+
+.footer-btn-off {
+    background: #d39999;
+}
+
+.footer-btn img {
+    height: 45px;
+    width: 45px;
+}
+
+.footer-btn:hover {
+    background: #636b6dd4;
+}
+
+.tab-content {
+    margin-top: 0;
+    height: 95%;
+}
+
+.call-tab {
+    height: 100%;
+}
+
+.local-video {
+    margin: 15px;
+    border-radius: 20px;
+    border: 2px solid black;
+    position: absolute;
+    height: 25%
+}
+
+.remoute-video {
+    border-radius: 10px;
+    border: 2px solid black;
+    height: 100%;
+    width: 100%;
+    background: rgb(37, 37, 37);
+}
+
+.chat-area {
+    height: 92%;
+    border: 1px solid black;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: auto;
+}
+
+.message-area {
+    height: 8%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: 2px solid black;
+}
+
+.message {
+    padding: 10px;
+    background-color: #99CFD3;
+    margin: 10px;
+    margin-right: 30px;
+    border-radius: 17px;
+    border-bottom-left-radius: 0px;
+    word-wrap: break-word;
+}
+
+.my-message {
+    margin-right: 10px;
+    margin-left: 30px;
+    border-bottom-left-radius: 17px;
+    border-bottom-right-radius: 0px;
+}
+
+.message-input {
+    margin: 5px;
+    width: 90%;
+    height: 80%;
+}
+
+.send-message-btn {
+    margin: 5px;
+    width: 10%;
+    height: 80%;
+}
+
+#mirolink {
+    width: 50%;
+    height: 40px;
+    border-radius: 5px;
+}

@@ -1,0 +1,17 @@
+{
+    "source": "src/index.html",
+    "scripts": {
+        "start": "parcel --port 9966",
+        "dev": "parcel",
+        "build": "parcel build --dist-dir public --public-url /call --out-dir /call",
+        "test": "parcel -V"
+    },
+    "dependencies": {
+        "getusermedia": "^2.0.1",
+        "simple-peer": "^9.11.1",
+        "buffer": "^5.7.1",
+        "events": "^3.3.0",
+        "parcel": "^2.8.3",
+        "process": "^0.11.10"
+    }
+}

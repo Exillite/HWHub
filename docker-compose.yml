@@ -17,7 +17,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: uvicorn main:app --host 0.0.0.0 --reload
+    command: uvicorn main:app --host 0.0.0.0 --reload --ws websockets
     ports:
       - "8000:8000"
     networks:
@@ -49,6 +49,17 @@ services:
       - api
     volumes:
       - ./frontend/app:/app
+
+  call:
+    build:
+      context: ./rtc-calls
+      dockerfile: Dockerfile
+    ports:
+      - "9966:9966"
+    networks:
+      - custom
+    depends_on:
+      - api
 
 networks:
   custom:
