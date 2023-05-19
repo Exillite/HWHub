@@ -90,7 +90,7 @@ async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User 
         return {"status": 500, "error": str(e)}
 
 
-@router.patch("/connect/{}")
+@router.patch("/connect/{student_group_code}")
 async def connect_current_user_to_student_group(student_group_code: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     try:
         await crud.add_user_to_student_group_by_code(student_group_code, current_user.id)
