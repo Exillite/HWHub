@@ -48,7 +48,7 @@ body {
 }
 
 .mini-panel {
-    background: #d5d7db;
+    background: #dcdcdc;
     height: 100%;
     border-radius: 10px;
 }
@@ -84,6 +84,10 @@ body {
 
 .footer-btn:hover {
     background: #636b6dd4;
+}
+
+.footer-btn-off:hover {
+    background: #b88989;
 }
 
 .tab-content {
@@ -159,4 +163,18 @@ body {
     width: 50%;
     height: 40px;
     border-radius: 5px;
+}
+
+.chat {
+    overflow: auto;
+    width: 100%;
+    height: 92%;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.chat-field {
+    width: 100%;
+    height: 8%;
+    padding: 10px;
 }

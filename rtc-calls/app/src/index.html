@@ -24,7 +24,19 @@
                 </div>
             </div>
             <div class="col-3 right-panel" hidden id="rightPanel">
-                <div class="mini-panel"></div>
+                <div class="mini-panel">
+                    <div class="chat" id="chatArea"></div>
+                    <div class="chat-field">
+                        <div class="input-group mb-3">
+                            <input id="yourMessage" type="text" class="form-control" placeholder="Введите ваше сообщение..." aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                            <div class="input-group-append">
+                                <button id="sendMessage" class="btn btn-outline-secondary" type="button">
+                                  <img src="assets/send.png" alt="Отправить" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -36,7 +48,7 @@
                     <div id="novideobtn" class="footer-btn">
                         <img src="assets/Icons/Camera.png" />
                     </div>
-                    <div class="footer-btn">
+                    <div class="footer-btn footer-btn-off">
                         <img src="assets/Icons/out.png" />
                     </div>
                     <div class="footer-btn" id="chatbtn">
