@@ -1,3 +1,7 @@
+console.log(1111);
+console.log(SimplePeer);
+
+
 function onopenMiro(share_link) {
     // https://miro.com/app/board/uXjVMQ_om3w=/?share_link_id=870054768292
     let lnk = share_link.split('/')
@@ -29,10 +33,9 @@ onopenMiro('https://miro.com/app/board/uXjVMQ_om3w=/?share_link_id=870054768292'
 if (location.hash === '#init') {
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-        var Peer = require('simple-peer')
         let is_camera = true;
         let is_mic = true;
-        var peer = new Peer({
+        var peer = new SimplePeer({
             initiator: location.hash === '#init',
             trickle: false,
             stream: stream,
@@ -42,7 +45,7 @@ if (location.hash === '#init') {
 
         var localVideo = document.getElementById("localVideo")
 
-        if ('srcObject' in this) {
+        if (this && 'srcObject' in this) {
             localVideo.srcObject = stream;
         } else {
             localVideo.srcObject = stream;
@@ -176,10 +179,9 @@ if (location.hash === '#init') {
     })
 } else {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-        var Peer = require('simple-peer')
         let is_camera = true;
         let is_mic = true;
-        var peer = new Peer({
+        var peer = new SimplePeer({
             initiator: location.hash === '#init',
             trickle: false,
             stream: stream,
@@ -189,7 +191,7 @@ if (location.hash === '#init') {
 
         var localVideo = document.getElementById("localVideo")
 
-        if ('srcObject' in this) {
+        if (this && 'srcObject' in this) {
             localVideo.srcObject = stream;
         } else {
             localVideo.srcObject = stream;
