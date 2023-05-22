@@ -57,52 +57,56 @@ if (location.hash === "#init") {
                 );
             });
 
-            document.getElementById('sendMessage').addEventListener('click', function() {
-                var yourMessage = document.getElementById('yourMessage').value
-                if (!yourMessage) return;
-                var rqst = {
-                    type: 'chat-message',
-                    is_init: location.hash === "#init",
-                    text: yourMessage,
-                }
-                peer.send(JSON.stringify(rqst))
-
-                let chatArea = document.getElementById('chatArea')
-                var msg = document.createElement('div')
-                chatArea.appendChild(msg)
-                msg.innerHTML += yourMessage
-                msg.classList.add('message')
-                msg.classList.add('my-message')
-
-                chatArea.scrollTop = chatArea.scrollHeight;
-
-                document.getElementById('yourMessage').value = ''
-            })
-
-            document.getElementById('yourMessage').addEventListener("keydown", function(e) {
-                if (e.code === "Enter") {
-                    var yourMessage = document.getElementById('yourMessage').value
+            document
+                .getElementById("sendMessage")
+                .addEventListener("click", function() {
+                    var yourMessage = document.getElementById("yourMessage").value;
                     if (!yourMessage) return;
-
                     var rqst = {
-                        type: 'chat-message',
+                        type: "chat-message",
                         is_init: location.hash === "#init",
                         text: yourMessage,
-                    }
-                    peer.send(JSON.stringify(rqst))
+                    };
+                    peer.send(JSON.stringify(rqst));
 
-                    let chatArea = document.getElementById('chatArea')
-                    var msg = document.createElement('div')
-                    chatArea.appendChild(msg)
-                    msg.innerHTML += yourMessage
-                    msg.classList.add('message')
-                    msg.classList.add('my-message')
+                    let chatArea = document.getElementById("chatArea");
+                    var msg = document.createElement("div");
+                    chatArea.appendChild(msg);
+                    msg.innerHTML += yourMessage;
+                    msg.classList.add("message");
+                    msg.classList.add("my-message");
 
                     chatArea.scrollTop = chatArea.scrollHeight;
 
-                    document.getElementById('yourMessage').value = ''
-                }
-            })
+                    document.getElementById("yourMessage").value = "";
+                });
+
+            document
+                .getElementById("yourMessage")
+                .addEventListener("keydown", function(e) {
+                    if (e.code === "Enter") {
+                        var yourMessage = document.getElementById("yourMessage").value;
+                        if (!yourMessage) return;
+
+                        var rqst = {
+                            type: "chat-message",
+                            is_init: location.hash === "#init",
+                            text: yourMessage,
+                        };
+                        peer.send(JSON.stringify(rqst));
+
+                        let chatArea = document.getElementById("chatArea");
+                        var msg = document.createElement("div");
+                        chatArea.appendChild(msg);
+                        msg.innerHTML += yourMessage;
+                        msg.classList.add("message");
+                        msg.classList.add("my-message");
+
+                        chatArea.scrollTop = chatArea.scrollHeight;
+
+                        document.getElementById("yourMessage").value = "";
+                    }
+                });
 
             peer.on("data", function(data) {
                 let rsp = JSON.parse(data);
@@ -229,49 +233,57 @@ if (location.hash === "#init") {
             //     document.getElementById('messages').textContent += data + '\n'
             // })
 
-            document.getElementById('sendMessage').addEventListener('click', function() {
-                var yourMessage = document.getElementById('yourMessage').value
-                var rqst = {
-                    type: 'chat-message',
-                    is_init: location.hash === "#init",
-                    text: yourMessage,
-                }
-                peer.send(JSON.stringify(rqst))
+            document
+                .getElementById("sendMessage")
+                .addEventListener("click", function() {
+                    var yourMessage = document.getElementById("yourMessage").value;
+                    if (!yourMessage) return;
 
-                let chatArea = document.getElementById('chatArea')
-                var msg = document.createElement('div')
-                chatArea.appendChild(msg)
-                msg.innerHTML += yourMessage
-                msg.classList.add('message')
-                msg.classList.add('my-message')
-
-                chatArea.scrollTop = chatArea.scrollHeight;
-
-                document.getElementById('yourMessage').value = ''
-            })
-
-            document.getElementById('yourMessage').addEventListener("keydown", function(e) {
-                if (e.code === "Enter") {
-                    var yourMessage = document.getElementById('yourMessage').value
                     var rqst = {
-                        type: 'chat-message',
+                        type: "chat-message",
                         is_init: location.hash === "#init",
                         text: yourMessage,
-                    }
-                    peer.send(JSON.stringify(rqst))
+                    };
+                    peer.send(JSON.stringify(rqst));
 
-                    let chatArea = document.getElementById('chatArea')
-                    var msg = document.createElement('div')
-                    chatArea.appendChild(msg)
-                    msg.innerHTML += yourMessage
-                    msg.classList.add('message')
-                    msg.classList.add('my-message')
+                    let chatArea = document.getElementById("chatArea");
+                    var msg = document.createElement("div");
+                    chatArea.appendChild(msg);
+                    msg.innerHTML += yourMessage;
+                    msg.classList.add("message");
+                    msg.classList.add("my-message");
 
                     chatArea.scrollTop = chatArea.scrollHeight;
 
-                    document.getElementById('yourMessage').value = ''
-                }
-            })
+                    document.getElementById("yourMessage").value = "";
+                });
+
+            document
+                .getElementById("yourMessage")
+                .addEventListener("keydown", function(e) {
+                    if (e.code === "Enter") {
+                        var yourMessage = document.getElementById("yourMessage").value;
+                        if (!yourMessage) return;
+
+                        var rqst = {
+                            type: "chat-message",
+                            is_init: location.hash === "#init",
+                            text: yourMessage,
+                        };
+                        peer.send(JSON.stringify(rqst));
+
+                        let chatArea = document.getElementById("chatArea");
+                        var msg = document.createElement("div");
+                        chatArea.appendChild(msg);
+                        msg.innerHTML += yourMessage;
+                        msg.classList.add("message");
+                        msg.classList.add("my-message");
+
+                        chatArea.scrollTop = chatArea.scrollHeight;
+
+                        document.getElementById("yourMessage").value = "";
+                    }
+                });
 
             peer.on("data", function(data) {
                 let rsp = JSON.parse(data);
