@@ -265,44 +265,46 @@ export default {
       this.$router.push({ name: "Login" });
     }
 
-    api.me().then((response) => {
-      if (response.data.status == 200) {
-        this.user = response.data.user;
+    api.me().then((r) => {
+      if (r.data.status == 200) {
+        this.user = r.data.user;
       }
-    });
 
-    api.get_student_group(this.$route.params.id).then((response) => {
-      if (response.data.status == 200) {
-        this.group = response.data.student_group;
-        this.new_title = this.group.title;
+      api.get_student_group(this.$route.params.id).then((response) => {
+        if (response.data.status == 200) {
+          this.group = response.data.student_group;
+          this.new_title = this.group.title;
 
-        api.get_all_homeworks_from_student_group(this.group.id).then((res) => {
-          if (res.data.status == 200) {
-            this.homeworks = res.data.homeworks;
-          }
-        });
+          api
+            .get_all_homeworks_from_student_group(this.group.id)
+            .then((res) => {
+              if (res.data.status == 200) {
+                this.homeworks = res.data.homeworks;
+              }
+            });
 
-        api.get_student_groups_students(this.group.id).then((res) => {
-          if (res.data.status == 200) {
-            this.students = res.data.users;
-          }
-        });
+          api.get_student_groups_students(this.group.id).then((res) => {
+            if (res.data.status == 200) {
+              this.students = res.data.users;
+            }
+          });
 
-        api.get_student_groups_consultants(this.group.id).then((res) => {
-          if (res.data.status == 200) {
-            this.consultants = res.data.users;
-          }
-        });
+          api.get_student_groups_consultants(this.group.id).then((res) => {
+            if (res.data.status == 200) {
+              this.consultants = res.data.users;
+            }
+          });
 
-        api.get_student_group_marks(this.group.id).then((res) => {
-          if (res.data.status == 200) {
-            this.show_marks();
-            this.items = res.data.marks;
-          }
-        });
-      } else {
-        this.$router.push({ name: "Error" });
-      }
+          api.get_student_group_marks(this.group.id).then((res) => {
+            if (res.data.status == 200) {
+              this.show_marks();
+              this.items = res.data.marks;
+            }
+          });
+        } else {
+          this.$router.push({ name: "Error" });
+        }
+      });
     });
   },
 

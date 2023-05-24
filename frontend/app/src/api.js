@@ -1,5 +1,5 @@
 import axios from "axios";
-import control from "./control";
+import control from "@/control";
 
 const token = control.get_authorization_token();
 
@@ -12,6 +12,13 @@ if (token) {
 }
 
 export default {
+    async reautorizate() {
+        const token = control.get_authorization_token();
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
+    },
+
     async authorize(login, password) {
         return axios.post(
             "/auth/token", { username: login, password: password }, {
@@ -23,6 +30,7 @@ export default {
     },
 
     async me() {
+        this.reautorizate();
         return axios.get("/me");
     },
 
