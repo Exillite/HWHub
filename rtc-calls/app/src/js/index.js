@@ -26,14 +26,16 @@ onopenMiro(
     "https://miro.com/app/board/uXjVMQ_om3w=/?share_link_id=870054768292"
 );
 
-if (location.hash === "#init") {
+const is_initiator = location.hash === "#init";
+
+if (is_initiator) {
     navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
             let is_camera = true;
             let is_mic = true;
             var peer = new SimplePeer({
-                initiator: location.hash === "#init",
+                initiator: is_initiator,
                 trickle: false,
                 stream: stream,
             });
@@ -57,6 +59,8 @@ if (location.hash === "#init") {
                 );
             });
 
+            document.getElementById("marksbtn").hidden = false;
+
             document
                 .getElementById("sendMessage")
                 .addEventListener("click", function() {
@@ -64,7 +68,7 @@ if (location.hash === "#init") {
                     if (!yourMessage) return;
                     var rqst = {
                         type: "chat-message",
-                        is_init: location.hash === "#init",
+                        is_init: is_initiator,
                         text: yourMessage,
                     };
                     peer.send(JSON.stringify(rqst));
@@ -90,7 +94,7 @@ if (location.hash === "#init") {
 
                         var rqst = {
                             type: "chat-message",
-                            is_init: location.hash === "#init",
+                            is_init: is_initiator,
                             text: yourMessage,
                         };
                         peer.send(JSON.stringify(rqst));
@@ -185,13 +189,84 @@ if (location.hash === "#init") {
                 video.play();
             });
 
+            document
+                .getElementById("chouseHomeworkBtn")
+                .addEventListener("click", function() {
+                    document.getElementById("editZone").hidden = true;
+
+                    let table = document.getElementById("poinsTabel");
+                    table.innerHTML = "";
+
+                    var homework_select = document.getElementById("chouseHomework");
+                    var value = homework_select.value;
+                    if (!value) return;
+
+                    ws.send(
+                        JSON.stringify({ type: "get_submisssion", homework_id: value })
+                    );
+                });
+
+            let sub_id = "";
+            let poinst_len = 0;
+
+            document
+                .getElementById("EditSubBtn")
+                .addEventListener("click", function() {
+                    let dt = { points: [] };
+                    for (let i = 0; i < poinst_len; i++) {
+                        let point = document.getElementById(`point-${i}`).value / 100;
+                        dt.points.push(point);
+                    }
+
+                    dt.fine = document.getElementById("fine").value;
+
+                    ws.send(
+                        JSON.stringify({
+                            type: "edit_submisssion",
+                            data: dt,
+                            submission_id: sub_id,
+                        })
+                    );
+                });
+
             ws.onmessage = function(event) {
                 console.log(event.data);
 
                 let dt = event.data;
                 dt = JSON.parse(dt);
                 if (dt.type === "connect_final") {
+                    document.getElementById("title").innerHTML = dt.title;
+                    ws.send(JSON.stringify({ type: "get_homeworks" }));
                     peer.signal(dt.data);
+                }
+                if (dt.type === "get_homeworks_response") {
+                    let select = document.getElementById("chouseHomework");
+                    dt.data.forEach((homework) => {
+                        let option = document.createElement("option");
+                        option.innerHTML = `${homework.title}`;
+                        option.value = homework.id;
+                        select.appendChild(option);
+                    });
+                }
+                if (dt.type === "get_submisssion_response") {
+                    let table = document.getElementById("poinsTabel");
+                    sub_id = dt.data.id;
+                    poinst_len = dt.data.homework.points.length;
+                    for (let i = 0; i < dt.data.points.length; i++) {
+                        let tr = document.createElement("tr");
+                        tr.innerHTML = `<th scope="row">${i + 1}</th>
+                        <td>${dt.data.homework.points[i]}</td>
+                        <td>
+                            <input id="point-${i}" value="${
+              dt.data.points[i] * 100
+            }" type="number" class="form-control" min="0" max="100" onchange="if (this.value > 100) this.value = 100; if (this.value < 0) this.value = 0;">
+                        </td>`;
+                        table.appendChild(tr);
+                    }
+
+                    document.getElementById("fine").value = dt.data.fine;
+
+                    document.getElementById("editZone").hidden = false;
                 }
             };
         })
@@ -205,7 +280,7 @@ if (location.hash === "#init") {
             let is_camera = true;
             let is_mic = true;
             var peer = new SimplePeer({
-                initiator: location.hash === "#init",
+                initiator: is_initiator,
                 trickle: false,
                 stream: stream,
             });
@@ -241,7 +316,7 @@ if (location.hash === "#init") {
 
                     var rqst = {
                         type: "chat-message",
-                        is_init: location.hash === "#init",
+                        is_init: is_initiator,
                         text: yourMessage,
                     };
                     peer.send(JSON.stringify(rqst));
@@ -267,7 +342,7 @@ if (location.hash === "#init") {
 
                         var rqst = {
                             type: "chat-message",
-                            is_init: location.hash === "#init",
+                            is_init: is_initiator,
                             text: yourMessage,
                         };
                         peer.send(JSON.stringify(rqst));
@@ -368,6 +443,7 @@ if (location.hash === "#init") {
                 let dt = event.data;
                 dt = JSON.parse(dt);
                 if (dt.type === "connect_response") {
+                    document.getElementById("title").innerHTML = dt.title;
                     peer.signal(dt.data);
                 }
             };

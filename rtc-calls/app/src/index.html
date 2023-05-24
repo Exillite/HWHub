@@ -15,8 +15,9 @@
 </head>
 
 <body>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center" style="height: 90vh">
+    <div class="container-fluid h-100" style="overflow: hidden;">
+        <h3 id="title" class="call-title">Ожидаем подключение...</h3>
+        <div class="row justify-content-center" style="height: 86vh">
             <div class="col-10 left-panel" id="leftPanel">
                 <div id="callPanel" class="call-tab">
                     <video id="localVideo" class="local-video"></video>
@@ -31,10 +32,44 @@
                             <input id="yourMessage" type="text" class="form-control" placeholder="Введите ваше сообщение..." aria-label="Recipient's username" aria-describedby="basic-addon2" />
                             <div class="input-group-append">
                                 <button id="sendMessage" class="btn btn-outline-secondary" type="button">
-                                  <img src="assets/send.png" alt="Отправить" />
-                                </button>
+                    <img src="assets/send.png" alt="Отправить" />
+                  </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3 right-panel" id="rightPanelMark" hidden>
+                <div class="mini-panel">
+                    <div class="chouse-submission">
+                        <select id="chouseHomework" class="form-control form-control-lg">
+                <option value="" selected disabled hidden>Задание...</option>
+              </select>
+                        <br />
+                        <button type="button" id="chouseHomeworkBtn" class="btn btn-primary btn-lg btn-block">
+                Выбрать
+              </button>
+                    </div>
+
+                    <div id="editZone" class="edit-submission" hidden>
+                        <div class="points">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="border border-dark" scope="col">№</th>
+                                        <th class="border border-dark" scope="col">Балл (max)</th>
+                                        <th class="border border-dark" scope="col">Оценка (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="poinsTabel"></tbody>
+                            </table>
+                        </div>
+                        <input id="fine" type="number" class="form-control" onchange="if(!this.value) this.value = 0;" />
+                        <br />
+                        <button type="button" id="EditSubBtn" class="btn btn-primary btn-lg btn-block">
+                Сохранить
+              </button>
                     </div>
                 </div>
             </div>
@@ -53,6 +88,9 @@
                     </div>
                     <div class="footer-btn" id="chatbtn">
                         <img src="assets/Icons/Chat.png" />
+                    </div>
+                    <div class="footer-btn" id="marksbtn" hidden>
+                        <img src="assets/notes.png" />
                     </div>
                 </div>
             </div>

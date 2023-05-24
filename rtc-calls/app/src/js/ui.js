@@ -41,10 +41,37 @@ function change_mini_tab() {
 
 let left_panel = document.getElementById("leftPanel");
 let right_panel = document.getElementById("rightPanel");
+let marks_panel = document.getElementById("rightPanelMark");
 
 let is_leftPanel = false;
+let is_marksPanel = false;
+
+
+function open_close_marks_panel() {
+    if (is_leftPanel) {
+        open_close_right_panel();
+    }
+
+    if (is_marksPanel) {
+        left_panel.classList.remove("col-9");
+        left_panel.classList.add("col-10");
+
+        marks_panel.hidden = true;
+        is_marksPanel = false;
+    } else {
+        left_panel.classList.remove("col-10");
+        left_panel.classList.add("col-9");
+
+        marks_panel.hidden = false;
+        is_marksPanel = true;
+    }
+}
 
 function open_close_right_panel() {
+    if (is_marksPanel) {
+        open_close_marks_panel();
+    }
+
     if (is_leftPanel) {
         right_panel.hidden = true;
 
@@ -63,4 +90,8 @@ function open_close_right_panel() {
 
 document.getElementById("chatbtn").addEventListener("click", function() {
     open_close_right_panel();
+});
+
+document.getElementById("marksbtn").addEventListener("click", function() {
+    open_close_marks_panel();
 });

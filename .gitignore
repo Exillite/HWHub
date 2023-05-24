@@ -4,3 +4,4 @@ data/
 /backend/app/logs
 .vscode/
 /.mypy_cache
+.fleet
