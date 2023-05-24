@@ -205,7 +205,7 @@ Example:
 
 ## **Auth**
 
-### Get My Accaunt
+### Get My Account
 - URL: `/api/v0.1/auth/token`
 - method: **POST**
 - auth required: **NO**
