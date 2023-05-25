@@ -1,14 +1,5 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-toolbar-title @click="$router.push({ name: 'Main' })"
-        >ЛОГО</v-toolbar-title
-      >
-      <v-spacer></v-spacer>
-      <v-btn @click="$router.push({ name: 'Registration' })" text
-        >Зарегистрироваться</v-btn
-      >
-    </v-app-bar>
     <v-main>
       <v-container>
         <div class="text-center">
@@ -296,6 +287,7 @@ export default {
     },
 
     submit_edit_homework() {
+      console.log("ae");
       if (this.new_files.length != 0) {
         api.upload_files(this.new_files).then((res) => {
           let new_files = [];

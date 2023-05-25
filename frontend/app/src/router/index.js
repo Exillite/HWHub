@@ -1,7 +1,8 @@
 import Main from "@/pages/Main.vue";
 import { createWebHistory, createRouter } from "vue-router";
 
-const routes = [{
+const routes = [
+    {
         path: "/",
         name: "Main",
         component: Main,
@@ -41,6 +42,12 @@ const routes = [{
         name: "Homework",
         component: () =>
             import ("@/pages/Homework.vue"),
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: "404",
+        component: () =>
+            import ("@/pages/404.vue")
     },
 ];
 

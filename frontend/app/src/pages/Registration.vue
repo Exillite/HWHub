@@ -1,12 +1,5 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-toolbar-title @click="$router.push({ name: 'Main' })"
-        >ЛОГО</v-toolbar-title
-      >
-      <v-spacer></v-spacer>
-      <v-btn text @click="$router.push({ name: 'Login' })">Войти</v-btn>
-    </v-app-bar>
     <v-main>
       <v-container>
         <v-alert
