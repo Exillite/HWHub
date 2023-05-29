@@ -64,14 +64,22 @@
             required
             :rules="passwordRules"
             autocomplete="current-password"
-          ></v-text-field>
+          >
+            <template v-slot:loader>
+              <v-progress-linear
+                :color="passwordScoreColor"
+                :model-value="passwordScore"
+                max="4"
+              ></v-progress-linear>
+            </template>
+          </v-text-field>
           <v-text-field
             variant="outlined"
             v-model="form.repit_password"
             label="Повторите пароль"
             type="password"
             required
-            :rules="repit_passwordRules"
+            :rules="repeat_passwordRules"
             autocomplete="current-password"
           ></v-text-field>
           <v-btn
@@ -89,6 +97,7 @@
 
 <script>
 import api from "@/api.js";
+import zxcvbn from "zxcvbn";
 
 export default {
   data() {
@@ -134,13 +143,37 @@ export default {
       passwordRules: [
         (v) => !!v || "Введите пароль",
         (v) => (v && v.length > 6) || "Пароль должен быть более длинным",
+        (v) => (this.passwordScore > 1) || "Пароль слишком слабый",
       ],
-      repit_passwordRules: [
+      repeat_passwordRules: [
         (v) => !!v || "Введите пароль",
         (v) => (v && v.length > 6) || "Пароль должен быть более длинным",
         (v) => (v && v === this.form.password) || "Пароли не совпадают",
       ],
     };
+  },
+  computed: {
+    passwordScore() {
+      let result = zxcvbn(this.form.password, [this.form.name, this.form.patronymic, this.form.surname, this.form.login]);
+      // TODO: possibly show time to crack
+      return result.score;
+    },
+    passwordScoreColor() {
+      switch (this.passwordScore) {
+        case 0:
+          return "red-darken-4";
+        case 1:
+          return "orange-darken-3";
+        case 2:
+          return "yellow-darken-1";
+        case 3:
+          return "lime";
+        case 4:
+          return "green";
+        default:
+          return "gray";
+      }
+    }
   },
   methods: {
     submit() {
