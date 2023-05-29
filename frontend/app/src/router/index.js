@@ -28,7 +28,6 @@ const routes = [
     {
         path: "/registration",
         name: "Registration",
-        beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Registration.vue"),
     },

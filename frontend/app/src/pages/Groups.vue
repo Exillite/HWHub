@@ -1,66 +1,62 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-row align="stretch">
-          <v-col
-            v-for="(group, index) in groups"
-            :key="index"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-          >
-            <v-card variant="outlined">
-              <v-card-item>
-                <div>
-                  <div class="text-h6 mb-1">
-                    {{ group.title }}
-                  </div>
-                  <div class="text-caption">
-                    {{ group.teacher.name }} {{ group.teacher.surname }}
-                  </div>
-                </div>
-              </v-card-item>
+  <v-container>
+    <v-row align="stretch">
+      <v-col
+        v-for="(group, index) in groups"
+        :key="index"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
+        <v-card variant="outlined">
+          <v-card-item>
+            <div>
+              <div class="text-h6 mb-1">
+                {{ group.title }}
+              </div>
+              <div class="text-caption">
+                {{ group.teacher.name }} {{ group.teacher.surname }}
+              </div>
+            </div>
+          </v-card-item>
 
-              <v-card-actions>
-                <v-btn
-                  @click="
-                    $router.push({ name: 'Group', params: { id: group.id } })
-                  "
-                  variant="outlined"
-                >
-                  Открыть
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+          <v-card-actions>
+            <v-btn
+              @click="
+                $router.push({ name: 'Group', params: { id: group.id } })
+              "
+              variant="outlined"
+            >
+              Открыть
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <v-btn
-          v-if="user.role === 'teacher' || user.role === 'admin'"
-          @click="new_group_dialog = true"
-          variant="outlined"
-          size="x-large"
-          class="new-group-btn"
-          color="info"
-        >
-          Создать новую группу
-        </v-btn>
+    <v-btn
+      v-if="user.role === 'teacher' || user.role === 'admin'"
+      @click="new_group_dialog = true"
+      variant="outlined"
+      size="x-large"
+      class="new-group-btn"
+      color="info"
+    >
+      Создать новую группу
+    </v-btn>
 
-        <v-btn
-          v-if="user.role === 'student' || user.role === 'consultant'"
-          @click="group_connect_dialog = true"
-          variant="outlined"
-          size="x-large"
-          class="new-group-btn"
-          color="info"
-        >
-          Присоедениться к группе
-        </v-btn>
-      </v-container>
-    </v-main>
-  </v-app>
+    <v-btn
+      v-if="user.role === 'student' || user.role === 'consultant'"
+      @click="group_connect_dialog = true"
+      variant="outlined"
+      size="x-large"
+      class="new-group-btn"
+      color="info"
+    >
+      Присоедениться к группе
+    </v-btn>
+  </v-container>
 
   <v-dialog v-model="new_group_dialog">
     <v-card title="Создание новой группы">
