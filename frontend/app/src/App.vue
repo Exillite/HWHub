@@ -6,10 +6,14 @@
       >
       <v-spacer></v-spacer>
       <router-link to="login" v-if="isSignedOut() && $route.name !== 'Login'">
-        Войти
+        <v-btn text>
+          Войти
+        </v-btn>
       </router-link>
       <router-link to="registration" v-if="isSignedOut() && $route.name !== 'Registration'">
-        Зарегистрироваться
+        <v-btn text>
+          Зарегистрироваться
+        </v-btn>
       </router-link>
     </v-app-bar>
     <v-main>
