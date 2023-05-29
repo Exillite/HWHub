@@ -142,16 +142,12 @@ export default {
   },
 
   mounted() {
-    if (!control.check_auth()) {
-      this.$router.push({ name: "Login" });
-    }
-
     api.me().then((response) => {
       if (response.data.status == 200) {
         let data = response.data;
         this.user = data.user;
 
-        api.get_all_users_stdents_groups(this.user.id).then((res) => {
+        api.get_all_users_students_groups(this.user.id).then((res) => {
           if (res.data.status == 200) {
             this.groups = res.data.student_groups;
           }
@@ -169,7 +165,7 @@ export default {
             this.new_group_dialog = false;
             this.new_group_form.title = "";
 
-            api.get_all_users_stdents_groups(this.user.id).then((res) => {
+            api.get_all_users_students_groups(this.user.id).then((res) => {
               if (res.data.status == 200) {
                 this.groups = res.data.student_groups;
               }
@@ -186,7 +182,7 @@ export default {
             this.group_connect_dialog = false;
             this.connect_group_form.code = "";
 
-            api.get_all_users_stdents_groups(this.user.id).then((res) => {
+            api.get_all_users_students_groups(this.user.id).then((res) => {
               if (res.data.status == 200) {
                 this.groups = res.data.student_groups;
               }

@@ -1,5 +1,11 @@
 import Main from "@/pages/Main.vue";
 import { createWebHistory, createRouter } from "vue-router";
+import control from "@/control.js";
+
+function denyIfUnauthenticated() {
+    if (!control.check_auth())
+        return "/login";
+}
 
 const routes = [
     {
@@ -22,24 +28,28 @@ const routes = [
     {
         path: "/registration",
         name: "Registration",
+        beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Registration.vue"),
     },
     {
         path: "/groups",
         name: "Groups",
+        beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Groups.vue"),
     },
     {
         path: "/group/:id",
         name: "Group",
+        beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Group.vue"),
     },
     {
         path: "/homework/:id",
         name: "Homework",
+        beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Homework.vue"),
     },

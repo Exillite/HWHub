@@ -233,10 +233,6 @@ export default {
   },
 
   mounted() {
-    if (!control.check_auth()) {
-      this.$router.push({ name: "Login" });
-    }
-
     api.me().then((response) => {
       if (response.data.status == 200) {
         this.user = response.data.user;

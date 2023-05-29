@@ -178,7 +178,7 @@ export default {
   methods: {
     submit() {
       api
-        .registaration_new_user(
+        .register_new_user(
           this.form.login,
           this.form.name,
           this.form.surname,

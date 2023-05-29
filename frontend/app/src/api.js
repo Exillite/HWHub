@@ -12,7 +12,7 @@ if (token) {
 }
 
 export default {
-    async reautorizate() {
+    async reauthorize() {
         const token = control.get_authorization_token();
         if (token) {
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -30,11 +30,11 @@ export default {
     },
 
     async me() {
-        this.reautorizate();
+        this.reauthorize();
         return axios.get("/me");
     },
 
-    async registaration_new_user(
+    async register_new_user(
         login,
         name,
         surname,
@@ -154,7 +154,7 @@ export default {
         return axios.delete(`/submission/${submission_id}`);
     },
 
-    async get_all_users_stdents_groups(user_id) {
+    async get_all_users_students_groups(user_id) {
         return axios.get(`/user/${user_id}/student_groups`);
     },
 
