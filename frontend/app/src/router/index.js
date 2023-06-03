@@ -42,6 +42,12 @@ const routes = [{
         component: () =>
             import ("@/pages/Homework.vue"),
     },
+    {
+        path: "/queue",
+        name: "Queue",
+        component: () =>
+            import ("@/pages/Queue.vue"),
+    },
 ];
 
 const router = new createRouter({
