@@ -1,164 +1,154 @@
 <template>
-  <v-app>
-    <v-app-bar app>
-      <v-toolbar-title @click="$router.push({ name: 'Main' })"
-        >ЛОГО</v-toolbar-title
+  <v-container>
+    <div class="text-center">
+      <h1>{{ group.title }}</h1>
+    </div>
+
+    <v-tabs v-model="tab" align-tabs="center">
+      <v-tab value="tasks">Задания</v-tab>
+      <v-tab
+        v-if="
+          user.role == 'admin' ||
+          user.role == 'consultant' ||
+          user.role == 'teacher'
+        "
+        value="students"
+        >Ученики</v-tab
       >
-      <v-spacer></v-spacer>
-    </v-app-bar>
-    <v-main>
-      <v-container>
-        <div class="text-center">
-          <h1>{{ group.title }}</h1>
-        </div>
+      <v-tab value="marks">Оценки</v-tab>
+      <v-tab
+        v-if="user.role == 'admin' || user.role == 'teacher'"
+        value="settings"
+        >Настройки</v-tab
+      >
+    </v-tabs>
+    <br />
+    <v-window v-model="tab">
+      <v-window-item value="tasks">
+        <v-row align="stretch">
+          <v-col
+            v-for="(homework, index) in homeworks"
+            :key="index"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-card variant="outlined">
+              <v-card-item>
+                <div>
+                  <div class="text-h6 mb-1">
+                    {{ homework.title }}
+                  </div>
+                  <div class="text-caption">
+                    До
+                    {{ date_format(homework.deadline) }}
+                  </div>
+                </div>
+              </v-card-item>
 
-        <v-tabs v-model="tab" align-tabs="center">
-          <v-tab value="tasks">Задания</v-tab>
-          <v-tab
-            v-if="
-              user.role == 'admin' ||
-              user.role == 'consultant' ||
-              user.role == 'teacher'
-            "
-            value="students"
-            >Ученики</v-tab
+              <v-card-actions>
+                <v-btn
+                  variant="outlined"
+                  @click="
+                    $router.push({
+                      name: 'Homework',
+                      params: { id: homework.id },
+                    })
+                  "
+                  >Открыть</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-btn
+          v-if="user.role === 'teacher' || user.role === 'admin'"
+          @click="new_homework_dialog = true"
+          variant="outlined"
+          size="x-large"
+          class="new-homework-btn"
+          color="info"
+        >
+          Добавить задание
+        </v-btn>
+      </v-window-item>
+
+      <v-window-item value="students">
+        <v-card
+          v-for="student in students"
+          :key="student.id"
+          variant="outlined"
+          class="d-flex align-center justify-space-between pa-2 ma-2"
+        >
+          <p class="fon">
+            {{ student.name }} {{ student.surname }}
+            {{ student.patronymic }}
+          </p>
+          <v-spacer></v-spacer>
+          <v-btn @click="kick_user(student.id)" color="red"
+            >Исключить</v-btn
           >
-          <v-tab value="marks">Оценки</v-tab>
-          <v-tab
-            v-if="user.role == 'admin' || user.role == 'teacher'"
-            value="settings"
-            >Настройки</v-tab
-          >
-        </v-tabs>
-        <br />
-        <v-window v-model="tab">
-          <v-window-item value="tasks">
-            <v-row align="stretch">
-              <v-col
-                v-for="(homework, index) in homeworks"
-                :key="index"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
+        </v-card>
+      </v-window-item>
+
+      <v-window-item value="marks">
+        <EasyDataTable
+          border-cell
+          :headers="headers"
+          :items="items"
+          hide-footer
+        />
+      </v-window-item>
+
+      <v-window-item value="settings">
+        <v-card variant="outlined" class="ma-2">
+          <v-card-item>
+            <v-card-title>Параметры</v-card-title>
+          </v-card-item>
+
+          <v-card-text>
+            <v-form @submit.prevent="submit_edit_group" variant="outlined">
+              <v-text-field
+                v-model="new_title"
+                variant="outlined"
+                label="Название"
+                required
+              ></v-text-field>
+              <v-btn variant="outlined" type="submit" class="mt-2"
+                >Сохранить</v-btn
               >
-                <v-card variant="outlined">
-                  <v-card-item>
-                    <div>
-                      <div class="text-h6 mb-1">
-                        {{ homework.title }}
-                      </div>
-                      <div class="text-caption">
-                        До
-                        {{ date_format(homework.deadline) }}
-                      </div>
-                    </div>
-                  </v-card-item>
+            </v-form>
+          </v-card-text>
+        </v-card>
 
-                  <v-card-actions>
-                    <v-btn
-                      variant="outlined"
-                      @click="
-                        $router.push({
-                          name: 'Homework',
-                          params: { id: homework.id },
-                        })
-                      "
-                      >Открыть</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
+        <v-card variant="outlined" class="ma-2">
+          <v-card-item>
+            <v-card-title>Консультанты</v-card-title>
+          </v-card-item>
 
-            <v-btn
-              v-if="user.role === 'teacher' || user.role === 'admin'"
-              @click="new_homework_dialog = true"
-              variant="outlined"
-              size="x-large"
-              class="new-homework-btn"
-              color="info"
-            >
-              Добавить задание
-            </v-btn>
-          </v-window-item>
-
-          <v-window-item value="students">
+          <v-card-text>
             <v-card
-              v-for="student in students"
-              :key="student.id"
+              v-for="consultant in consultants"
+              :key="consultant.id"
               variant="outlined"
               class="d-flex align-center justify-space-between pa-2 ma-2"
             >
               <p class="fon">
-                {{ student.name }} {{ student.surname }}
-                {{ student.patronymic }}
+                {{ consultant.name }} {{ consultant.surname }}
+                {{ consultant.patronymic }}
               </p>
               <v-spacer></v-spacer>
-              <v-btn @click="kick_user(student.id)" color="red"
+              <v-btn @click="kick_user(consultant.id)" color="red"
                 >Исключить</v-btn
               >
             </v-card>
-          </v-window-item>
-
-          <v-window-item value="marks">
-            <EasyDataTable
-              border-cell
-              :headers="headers"
-              :items="items"
-              hide-footer
-            />
-          </v-window-item>
-
-          <v-window-item value="settings">
-            <v-card variant="outlined" class="ma-2">
-              <v-card-item>
-                <v-card-title>Параметры</v-card-title>
-              </v-card-item>
-
-              <v-card-text>
-                <v-form @submit.prevent="submit_edit_group" variant="outlined">
-                  <v-text-field
-                    v-model="new_title"
-                    variant="outlined"
-                    label="Название"
-                    required
-                  ></v-text-field>
-                  <v-btn variant="outlined" type="submit" class="mt-2"
-                    >Сохранить</v-btn
-                  >
-                </v-form>
-              </v-card-text>
-            </v-card>
-
-            <v-card variant="outlined" class="ma-2">
-              <v-card-item>
-                <v-card-title>Консультанты</v-card-title>
-              </v-card-item>
-
-              <v-card-text>
-                <v-card
-                  v-for="consultant in consultants"
-                  :key="consultant.id"
-                  variant="outlined"
-                  class="d-flex align-center justify-space-between pa-2 ma-2"
-                >
-                  <p class="fon">
-                    {{ consultant.name }} {{ consultant.surname }}
-                    {{ consultant.patronymic }}
-                  </p>
-                  <v-spacer></v-spacer>
-                  <v-btn @click="kick_user(consultant.id)" color="red"
-                    >Исключить</v-btn
-                  >
-                </v-card>
-              </v-card-text>
-            </v-card>
-          </v-window-item>
-        </v-window>
-      </v-container>
-    </v-main>
-  </v-app>
+          </v-card-text>
+        </v-card>
+      </v-window-item>
+    </v-window>
+  </v-container>
 
   <v-dialog v-model="new_homework_dialog">
     <v-card title="Создание нового задания">
@@ -261,10 +251,6 @@ export default {
   },
 
   mounted() {
-    if (!control.check_auth()) {
-      this.$router.push({ name: "Login" });
-    }
-
     api.me().then((r) => {
       if (r.data.status == 200) {
         this.user = r.data.user;

@@ -1,101 +1,99 @@
 <template>
-  <v-app>
-    <v-app-bar app>
-      <v-toolbar-title @click="$router.push({ name: 'Main' })"
-        >ЛОГО</v-toolbar-title
+  <v-container>
+    <v-alert
+      v-if="error"
+      type="error"
+      title="Ошибка"
+      variant="outlined"
+      dismissible
+    >
+      {{ error_msg }}
+    </v-alert>
+    <h2>Регистрация</h2>
+    <v-form @submit.prevent="submit" v-model="isFormValid">
+      <v-text-field
+        v-model="form.name"
+        label="Имя"
+        variant="outlined"
+        type="text"
+        :rules="nameRules"
+        autocomplete="given-name"
+      ></v-text-field>
+      <v-text-field
+        v-model="form.surname"
+        label="Фамилия"
+        variant="outlined"
+        type="text"
+        required
+        :rules="surnameRules"
+        autocomplete="family-name"
+      ></v-text-field>
+      <v-text-field
+        v-model="form.patronymic"
+        label="Отчество"
+        variant="outlined"
+        type="text"
+        required
+        :rules="patronymicRules"
+      ></v-text-field>
+      <v-text-field
+        v-model="form.login"
+        label="Логин"
+        variant="outlined"
+        type="text"
+        required
+        :rules="loginRules"
+        autocomplete="login"
+      ></v-text-field>
+      <v-text-field
+        v-model="form.email"
+        variant="outlined"
+        label="E-mail"
+        type="email"
+        required
+        :rules="emailRules"
+        autocomplete="email"
+      ></v-text-field>
+      <v-text-field
+        variant="outlined"
+        v-model="form.password"
+        label="Пароль"
+        type="password"
+        required
+        :rules="passwordRules"
+        autocomplete="current-password"
       >
-      <v-spacer></v-spacer>
-      <v-btn text @click="$router.push({ name: 'Login' })">Войти</v-btn>
-    </v-app-bar>
-    <v-main>
-      <v-container>
-        <v-alert
-          v-if="error"
-          type="error"
-          title="Ошибка"
-          variant="outlined"
-          dismissible
-        >
-          {{ error_msg }}
-        </v-alert>
-        <h2>Регистрация</h2>
-        <v-form @submit.prevent="submit" v-model="isFormValid">
-          <v-text-field
-            v-model="form.name"
-            label="Имя"
-            variant="outlined"
-            type="text"
-            :rules="nameRules"
-            autocomplete="given-name"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.surname"
-            label="Фамилия"
-            variant="outlined"
-            type="text"
-            required
-            :rules="surnameRules"
-            autocomplete="family-name"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.patronymic"
-            label="Отчество"
-            variant="outlined"
-            type="text"
-            required
-            :rules="patronymicRules"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.login"
-            label="Логин"
-            variant="outlined"
-            type="text"
-            required
-            :rules="loginRules"
-            autocomplete="login"
-          ></v-text-field>
-          <v-text-field
-            v-model="form.email"
-            variant="outlined"
-            label="E-mail"
-            type="email"
-            required
-            :rules="emailRules"
-            autocomplete="email"
-          ></v-text-field>
-          <v-text-field
-            variant="outlined"
-            v-model="form.password"
-            label="Пароль"
-            type="password"
-            required
-            :rules="passwordRules"
-            autocomplete="current-password"
-          ></v-text-field>
-          <v-text-field
-            variant="outlined"
-            v-model="form.repit_password"
-            label="Повторите пароль"
-            type="password"
-            required
-            :rules="repit_passwordRules"
-            autocomplete="current-password"
-          ></v-text-field>
-          <v-btn
-            variant="outlined"
-            type="submit"
-            color="primary"
-            :disabled="!isFormValid"
-            >Зарегистрироваться</v-btn
-          >
-        </v-form>
-      </v-container>
-    </v-main>
-  </v-app>
+        <template v-slot:loader>
+          <v-progress-linear
+            :color="passwordScoreColor"
+            :model-value="passwordScore"
+            max="4"
+          ></v-progress-linear>
+        </template>
+      </v-text-field>
+      <v-text-field
+        variant="outlined"
+        v-model="form.repit_password"
+        label="Повторите пароль"
+        type="password"
+        required
+        :rules="repeat_passwordRules"
+        autocomplete="current-password"
+      ></v-text-field>
+      <v-btn
+        variant="outlined"
+        type="submit"
+        color="primary"
+        :disabled="!isFormValid"
+        >Зарегистрироваться</v-btn
+      >
+    </v-form>
+  </v-container>
 </template>
 
 <script>
 import api from "@/api.js";
+import zxcvbn from "zxcvbn";
 
 export default {
   data() {
@@ -141,18 +139,42 @@ export default {
       passwordRules: [
         (v) => !!v || "Введите пароль",
         (v) => (v && v.length > 6) || "Пароль должен быть более длинным",
+        (v) => (this.passwordScore > 1) || "Пароль слишком слабый",
       ],
-      repit_passwordRules: [
+      repeat_passwordRules: [
         (v) => !!v || "Введите пароль",
         (v) => (v && v.length > 6) || "Пароль должен быть более длинным",
         (v) => (v && v === this.form.password) || "Пароли не совпадают",
       ],
     };
   },
+  computed: {
+    passwordScore() {
+      let result = zxcvbn(this.form.password, [this.form.name, this.form.patronymic, this.form.surname, this.form.login]);
+      // TODO: possibly show time to crack
+      return result.score;
+    },
+    passwordScoreColor() {
+      switch (this.passwordScore) {
+        case 0:
+          return "red-darken-4";
+        case 1:
+          return "orange-darken-3";
+        case 2:
+          return "yellow-darken-1";
+        case 3:
+          return "lime";
+        case 4:
+          return "green";
+        default:
+          return "gray";
+      }
+    }
+  },
   methods: {
     submit() {
       api
-        .registaration_new_user(
+        .register_new_user(
           this.form.login,
           this.form.name,
           this.form.surname,

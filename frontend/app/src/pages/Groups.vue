@@ -1,72 +1,62 @@
 <template>
-  <v-app>
-    <v-app-bar app>
-      <v-toolbar-title @click="$router.push({ name: 'Main' })"
-        >ЛОГО</v-toolbar-title
+  <v-container>
+    <v-row align="stretch">
+      <v-col
+        v-for="(group, index) in groups"
+        :key="index"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
       >
-      <v-spacer></v-spacer>
-    </v-app-bar>
-    <v-main>
-      <v-container>
-        <v-row align="stretch">
-          <v-col
-            v-for="(group, index) in groups"
-            :key="index"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-          >
-            <v-card variant="outlined">
-              <v-card-item>
-                <div>
-                  <div class="text-h6 mb-1">
-                    {{ group.title }}
-                  </div>
-                  <div class="text-caption">
-                    {{ group.teacher.name }} {{ group.teacher.surname }}
-                  </div>
-                </div>
-              </v-card-item>
+        <v-card variant="outlined">
+          <v-card-item>
+            <div>
+              <div class="text-h6 mb-1">
+                {{ group.title }}
+              </div>
+              <div class="text-caption">
+                {{ group.teacher.name }} {{ group.teacher.surname }}
+              </div>
+            </div>
+          </v-card-item>
 
-              <v-card-actions>
-                <v-btn
-                  @click="
-                    $router.push({ name: 'Group', params: { id: group.id } })
-                  "
-                  variant="outlined"
-                >
-                  Открыть
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
+          <v-card-actions>
+            <v-btn
+              @click="
+                $router.push({ name: 'Group', params: { id: group.id } })
+              "
+              variant="outlined"
+            >
+              Открыть
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <v-btn
-          v-if="user.role === 'teacher' || user.role === 'admin'"
-          @click="new_group_dialog = true"
-          variant="outlined"
-          size="x-large"
-          class="new-group-btn"
-          color="info"
-        >
-          Создать новую группу
-        </v-btn>
+    <v-btn
+      v-if="user.role === 'teacher' || user.role === 'admin'"
+      @click="new_group_dialog = true"
+      variant="outlined"
+      size="x-large"
+      class="new-group-btn"
+      color="info"
+    >
+      Создать новую группу
+    </v-btn>
 
-        <v-btn
-          v-if="user.role === 'student' || user.role === 'consultant'"
-          @click="group_connect_dialog = true"
-          variant="outlined"
-          size="x-large"
-          class="new-group-btn"
-          color="info"
-        >
-          Присоедениться к группе
-        </v-btn>
-      </v-container>
-    </v-main>
-  </v-app>
+    <v-btn
+      v-if="user.role === 'student' || user.role === 'consultant'"
+      @click="group_connect_dialog = true"
+      variant="outlined"
+      size="x-large"
+      class="new-group-btn"
+      color="info"
+    >
+      Присоедениться к группе
+    </v-btn>
+  </v-container>
 
   <v-dialog v-model="new_group_dialog">
     <v-card title="Создание новой группы">
@@ -148,16 +138,12 @@ export default {
   },
 
   mounted() {
-    if (!control.check_auth()) {
-      this.$router.push({ name: "Login" });
-    }
-
     api.me().then((response) => {
       if (response.data.status == 200) {
         let data = response.data;
         this.user = data.user;
 
-        api.get_all_users_stdents_groups(this.user.id).then((res) => {
+        api.get_all_users_students_groups(this.user.id).then((res) => {
           if (res.data.status == 200) {
             this.groups = res.data.student_groups;
           }
@@ -175,7 +161,7 @@ export default {
             this.new_group_dialog = false;
             this.new_group_form.title = "";
 
-            api.get_all_users_stdents_groups(this.user.id).then((res) => {
+            api.get_all_users_students_groups(this.user.id).then((res) => {
               if (res.data.status == 200) {
                 this.groups = res.data.student_groups;
               }
@@ -192,7 +178,7 @@ export default {
             this.group_connect_dialog = false;
             this.connect_group_form.code = "";
 
-            api.get_all_users_stdents_groups(this.user.id).then((res) => {
+            api.get_all_users_students_groups(this.user.id).then((res) => {
               if (res.data.status == 200) {
                 this.groups = res.data.student_groups;
               }
