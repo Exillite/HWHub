@@ -47,15 +47,15 @@ db: Dict[str, Connection] = {}
 cons: Dict[str, Con] = {}
 
 
-@router.post("/new_call/{student_group_id}")
-async def new_call(student_group_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
+@router.post("/new_call/{student_group_id}/{student_id}")
+async def new_call(student_group_id: str, student_id: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     new_id = str(uuid.uuid4())
     while new_id in db:
         new_id = str(uuid.uuid4())
 
     student_group = await crud.get_student_group(student_group_id)
     cons[new_id] = Con(id=new_id, user=current_user, group=student_group)
-    cons[new_id].client2_user = await crud.get_user('646bb94c1920770459af4833')
+    cons[new_id].client2_user = await crud.get_user(student_id)
 
     return {"id": new_id}
 
