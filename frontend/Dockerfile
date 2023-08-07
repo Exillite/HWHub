@@ -3,7 +3,6 @@ FROM node:16
 
 COPY . .
 WORKDIR /app
-RUN npm install -g @vue/cli
 
 RUN npm install
 

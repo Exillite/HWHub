@@ -3,8 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build",
+        "serve": "vite --host --port 8080",
+        "dev": "vite",
+        "build": "vite build",
         "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
     },
     "dependencies": {
@@ -23,15 +24,11 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@intlify/vue-i18n-loader": "^3.0.0",
+        "@intlify/unplugin-vue-i18n": "^0.12.2",
         "@types/zxcvbn": "^4.4.1",
-        "@vue/cli-plugin-babel": "~5.0.0",
-        "@vue/cli-plugin-router": "~5.0.0",
-        "@vue/cli-plugin-vuex": "~5.0.0",
-        "@vue/cli-service": "~5.0.0",
-        "vue-cli-plugin-i18n": "~2.3.1",
-        "vue-cli-plugin-vuetify": "~2.5.8",
-        "webpack-plugin-vuetify": "^2.0.0-alpha.0"
+        "@vitejs/plugin-vue": "^4.2.3",
+        "vite": "^4.4.9",
+        "vite-plugin-vuetify": "^1.0.2"
     },
     "browserslist": [
         "> 1%",
