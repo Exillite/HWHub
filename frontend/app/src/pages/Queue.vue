@@ -30,10 +30,7 @@
               variant="outlined"
               class="d-flex align-center justify-space-between pa-2 ma-2"
             >
-              <p class="fon">
-                {{ student.name }} {{ student.surname }}
-                {{ student.patronymic }}
-              </p>
+              <UserReference :user="student" />
               <v-spacer></v-spacer>
             </v-card>
 
@@ -47,10 +44,7 @@
               class="d-flex align-center justify-space-between pa-2 ma-2"
               :color="hieghlight_me(student)"
             >
-              <p class="fon">
-                {{ student.name }} {{ student.surname }}
-                {{ student.patronymic }}
-              </p>
+              <UserReference :user="student" />
               <v-spacer></v-spacer>
             </v-card>
           </v-window-item>

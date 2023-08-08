@@ -82,10 +82,7 @@
           variant="outlined"
           class="d-flex align-center justify-space-between pa-2 ma-2"
         >
-          <p class="fon">
-            {{ student.name }} {{ student.surname }}
-            {{ student.patronymic }}
-          </p>
+          <UserReference :user="student" />
           <v-spacer></v-spacer>
           <v-btn @click="kick_user(student.id)" color="red"
             >Исключить</v-btn
@@ -135,10 +132,7 @@
               variant="outlined"
               class="d-flex align-center justify-space-between pa-2 ma-2"
             >
-              <p class="fon">
-                {{ consultant.name }} {{ consultant.surname }}
-                {{ consultant.patronymic }}
-              </p>
+              <UserReference :user="consultant" />
               <v-spacer></v-spacer>
               <v-btn @click="kick_user(consultant.id)" color="red"
                 >Исключить</v-btn
@@ -206,6 +200,7 @@
 <script>
 import api from "@/api.js";
 import control from "@/control.js";
+import UserReference from "@/components/UserReference.vue";
 
 export default {
   data() {
@@ -385,6 +380,7 @@ export default {
       else return `${day}.${month}.${year}`;
     },
   },
+  components: { UserReference },
 };
 </script>
 
