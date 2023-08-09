@@ -2,21 +2,32 @@
 import { avatarUrl } from "@/gravatar.js"
 
 export default {
-    data() {
-        return {
-            count: 0
+    computed: {
+        avatarUrl() {
+            return this.user?.email ? avatarUrl(this.user.email) : "";
         }
     },
-    methods: { avatarUrl },
-    props: ['user']
+    props: {
+        user: {
+            type: Object,
+            required: true
+        },
+        noPatronymic: {
+            type: Boolean,
+            default: false
+        } 
+    }
 };
 </script>
 
 <template>
-    <v-avatar :image="avatarUrl(user.email)" class="mr-3"></v-avatar>
-
-    <p class="fon">
-        {{ user.name }} {{ user.surname }}
+    <span class="fon">
+        <v-avatar :image="avatarUrl" class="mr-1" />
+    
+        {{ user.name }}
+        {{ user.surname }}
+        <template v-if="!noPatronymic">
         {{ user.patronymic }}
-    </p>
+        </template>
+    </span>
 </template>

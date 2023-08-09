@@ -16,7 +16,7 @@
                 {{ group.title }}
               </div>
               <div class="text-caption">
-                {{ group.teacher.name }} {{ group.teacher.surname }}
+                <UserReference :user="group.teacher" no-patronymic="true" />
               </div>
             </div>
           </v-card-item>
@@ -86,7 +86,7 @@
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="group_connect_dialog">
+  <!-- <v-dialog v-model="group_connect_dialog">
     <v-card title="Присоедениться к группы">
       <form @submit.prevent="submit_connect">
         <v-card-text>
@@ -112,12 +112,12 @@
         </v-card-actions>
       </form>
     </v-card>
-  </v-dialog>
+  </v-dialog> -->
 </template>
 
 <script>
 import api from "@/api.js";
-import control from "@/control";
+import UserReference from "@/components/UserReference.vue";
 
 export default {
   data() {
@@ -187,6 +187,7 @@ export default {
         });
     },
   },
+  components: { UserReference }
 };
 </script>
 

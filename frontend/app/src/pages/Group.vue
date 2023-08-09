@@ -88,6 +88,7 @@
             >Исключить</v-btn
           >
         </v-card>
+        <v-btn variant="outlined" color="blue" class="mt-5" @click="copyInvite">Скопировать приглашение</v-btn>
       </v-window-item>
 
       <v-window-item value="marks">
@@ -379,6 +380,13 @@ export default {
       if (with_time) return `${day}.${month}.${year} ${hours}:${minutes}`;
       else return `${day}.${month}.${year}`;
     },
+
+    async copyInvite() {
+      let invitePath = this.$router.resolve({ name: "InviteConfirm", params: { code: this.group.connect_code } })
+      let inviteUrl = new URL(invitePath.href, window.location.origin).href
+
+      await navigator.clipboard.writeText(inviteUrl)
+    }
   },
   components: { UserReference },
 };

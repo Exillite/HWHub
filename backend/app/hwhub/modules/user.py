@@ -90,6 +90,19 @@ async def get_all_users_stdents_groups(user_id: str, current_user: schemas.User 
         return {"status": 500, "error": str(e)}
 
 
+@router.get("/connect/{student_group_code}")
+async def get_student_group_info(student_group_code: str):
+    try:
+        stg = await crud.get_student_group_by_invite(student_group_code)
+
+        if not stg:
+            return {"status": 201}
+
+        return {"status": 200, "student_group": stg.to_json()}
+    except Exception as e:
+        return {"status": 500, "error": str(e)}
+
+
 @router.patch("/connect/{student_group_code}")
 async def connect_current_user_to_student_group(student_group_code: str, current_user: schemas.User = Depends(auth.get_current_active_user)):
     try:

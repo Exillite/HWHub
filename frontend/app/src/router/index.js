@@ -7,7 +7,8 @@ function denyIfUnauthenticated() {
         return "/login";
 }
 
-const routes = [{
+const routes = [
+    {
         path: "/",
         name: "Main",
         component: Main,
@@ -50,6 +51,13 @@ const routes = [{
         beforeEnter: denyIfUnauthenticated,
         component: () =>
             import ("@/pages/Homework.vue"),
+    },
+    {
+        path: "/invite/:code",
+        name: "InviteConfirm",
+        beforeEnter: denyIfUnauthenticated,
+        component: () =>
+            import("@/pages/InviteConfirm.vue"),
     },
 ];
 

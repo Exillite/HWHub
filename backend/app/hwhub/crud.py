@@ -65,6 +65,11 @@ async def get_student_group(stg_id: str) -> Optional[StudentGroupModel]:
     return student_group or None
 
 
+async def get_student_group_by_invite(stg_code: str) -> Optional[StudentGroupModel]:
+    student_group = await StudentGroupModel.get(connect_code=stg_code)
+    return student_group or None
+
+
 async def edit_student_group(stg: StudentGroupUpdate, stg_id: str) -> Optional[StudentGroupModel]:
     student_group = await StudentGroupModel.get(id=stg_id)
     if student_group:
